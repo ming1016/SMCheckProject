@@ -2,7 +2,7 @@
 //  ParsingMethod.swift
 //  SMCheckProject
 //
-//  Created by didi on 2016/10/20.
+//  Created by daiming on 2016/10/20.
 //  Copyright © 2016年 Starming. All rights reserved.
 //
 
@@ -10,17 +10,18 @@ import Cocoa
 
 class ParsingMethod: ParsingBase {
     func parsingWithArray(arr:Array<String>) -> Method {
-        let mtd = Method()
+        var mtd = Method()
         var returnTypeTf = false //是否取得返回类型
         var parsingTf = false //解析中
         var bracketCount = 0 //括弧计数
         var step = 0 //1获取参数名，2获取参数类型，3获取iName
         var types = [String]()
         var methodParam = MethodParam()
-        print("\(arr)")
+        //print("\(arr)")
         for tk in arr {
             if (tk == ";" || tk == "{") && step != 1 {
                 mtd.params.append(methodParam)
+                mtd.pnameId = mtd.pnameId.appending("\(methodParam.name):")
             } else if tk == "(" {
                 bracketCount += 1
                 parsingTf = true
@@ -58,6 +59,7 @@ class ParsingMethod: ParsingBase {
                 methodParam.iName = tk
                 step = 1
                 mtd.params.append(methodParam)
+                mtd.pnameId = mtd.pnameId.appending("\(methodParam.name):")
                 methodParam = MethodParam()
             } else if tk != "-" && tk != "+" {
                 methodParam.name = tk

@@ -2,7 +2,7 @@
 //  File.swift
 //  SMCheckProject
 //
-//  Created by didi on 2016/10/20.
+//  Created by daiming on 2016/10/20.
 //  Copyright © 2016年 Starming. All rights reserved.
 //
 
@@ -31,32 +31,61 @@ class File: NSObject {
     public var methods = [Method]() //所有方法
     
     func des() {
-        print("文件路径：\(path)")
-        print("文件名：\(name)")
-        print("方法数量：\(methods.count)")
+        print("文件路径：\(path)\n")
+        print("文件名：\(name)\n")
+        print("方法数量：\(methods.count)\n")
         print("方法列表：")
         for aMethod in methods {
             var showStr = "- (\(aMethod.returnType)) "
-            for aParam in aMethod.params {
-                if aParam.type == "" {
-                    showStr = showStr.appending("\(aParam.name);")
-                } else {
-                    showStr = showStr.appending("\(aParam.name):(\(aParam.type))\(aParam.iName);")
+            showStr = showStr.appending(File.desDefineMethodParams(paramArr: aMethod.params))
+            print("\n\(showStr)")
+            if aMethod.usedMethod.count > 0 {
+                print("用过的方法----------")
+                showStr = ""
+                for aUsedMethod in aMethod.usedMethod {
+                    showStr = ""
+                    showStr = showStr.appending(File.desUsedMethodParams(paramArr: aUsedMethod.params))
+                    print("\(showStr)")
                 }
-                
+                print("------------------")
             }
-            print("\(showStr)")
+            
         }
         print("\n")
     }
+    
+    //类方法
+    //打印定义方法参数
+    class func desDefineMethodParams(paramArr:[MethodParam]) -> String {
+        var showStr = ""
+        for aParam in paramArr {
+            if aParam.type == "" {
+                showStr = showStr.appending("\(aParam.name);")
+            } else {
+                showStr = showStr.appending("\(aParam.name):(\(aParam.type))\(aParam.iName);")
+            }
+            
+        }
+        return showStr
+    }
+    class func desUsedMethodParams(paramArr:[MethodParam]) -> String {
+        var showStr = ""
+        for aUParam in paramArr {
+            showStr = showStr.appending("\(aUParam.name):")
+        }
+        return showStr
+    }
+    
 }
 
-class Method: NSObject {
-    public var classMethodTf = false
-    public var name = ""
+struct Method {
+    public var classMethodTf = false //+ or -
     public var returnType = ""
     public var returnTypePointTf = false
     public var params = [MethodParam]()
+    public var usedMethod = [Method]()
+    public var filePath = "" //定义方法的文件路径，方便修改文件使用
+    public var pnameId = ""
 }
 
 class MethodParam: NSObject {
@@ -64,6 +93,12 @@ class MethodParam: NSObject {
     public var type = ""
     public var typePointTf = false
     public var iName = ""
+}
+
+class Type: NSObject {
+    //todo:更多类型
+    public var name = ""
+    public var type = 0 //0是值类型 1是指针
 }
 
 

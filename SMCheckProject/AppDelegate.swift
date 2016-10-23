@@ -2,7 +2,7 @@
 //  AppDelegate.swift
 //  SMCheckProject
 //
-//  Created by didi on 2016/10/13.
+//  Created by daiming on 2016/10/13.
 //  Copyright © 2016年 Starming. All rights reserved.
 //
 

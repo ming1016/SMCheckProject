@@ -2,7 +2,7 @@
 //  ViewController.swift
 //  SMCheckProject
 //
-//  Created by didi on 2016/10/13.
+//  Created by daiming on 2016/10/13.
 //  Copyright © 2016年 Starming. All rights reserved.
 //
 
@@ -13,8 +13,9 @@ class ViewController: NSViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        let fileFolderPath = self.selectFolder()
-        let fileFolderPath = "file:///Users/didi/Documents/Demo/HomePageTest/test/"
+        let fileFolderPath = self.selectFolder()
+//        let fileFolderPath = "file:///Users/didi/Documents/Demo/HomePageTest/test/"
+        //let fileFolderPath = "file:///Users/ming/Documents/Bitbucket/SMPageTabView/"
         let fileFolderStringPath = fileFolderPath.replacingOccurrences(of: "file://", with: "")
         
         let fileManager = FileManager.default;
@@ -26,12 +27,17 @@ class ViewController: NSViewController {
         
         var files = [File]()
         
+        var methodsDefinedInHFile = [Method]() //h文件定义的方法集合
+        var methodsDefinedInMFile = [Method]() //m文件定义的方法集合
+        var methodsUsed = [String]()    //用过的方法集合
+        
         //遍历文件夹下所有文件
         for filePathString in filterPath {
             
             var fullPath = fileFolderPath
             
             fullPath.append(filePathString)
+            
             
             //读取文件内容
             let fileUrl = URL(string: fullPath)
@@ -40,22 +46,62 @@ class ViewController: NSViewController {
                 
             } else {
                 let aFile = File()
+                
                 aFile.path = fullPath
                 
                 let content =  try! String(contentsOf: fileUrl!, encoding: String.Encoding.utf8)
                 
-//                print("文件内容: \(content)")
+                //print("文件内容: \(content)")
                 
                 let tokens = self.createOCTokens(conent: content)
-                //                        print(tokens)
+                //print(tokens)
+                //方法解析
                 var mtdArr = [String]() //方法字符串
-                
-                var psMtdTf = false
+                var psMtdTf = false //是否在解析方法
                 var psMtdStep = 0
+                //方法内部解析
+                var mtdContentArr = [String]()
+                var psMtdContentClass = Method() //正在解析的那个方法
+                var psMtdContentTf = false  //是否正在解析那个方法中实现部分内容
+                var psMtdContentBraceCount = 0 //大括号计数
                 
                 for tk in tokens {
                     //h文件 m文件
                     if aFile.type == FileType.fileH || aFile.type == FileType.fileM {
+                        
+                        //解析方法内容
+                        if psMtdContentTf {
+                            if tk == "{" {
+                                mtdContentArr.append(tk)
+                                psMtdContentBraceCount += 1
+                            } else if tk == "}" {
+                                mtdContentArr.append(tk)
+                                psMtdContentBraceCount -= 1
+                                if psMtdContentBraceCount == 0 {
+                                    var reMethod = ParsingMethodContent().parsing(contentArr: mtdContentArr, inMethod: psMtdContentClass)
+                                    aFile.methods.append(reMethod)
+                                    reMethod.filePath = aFile.path //将m文件路径赋给方法
+                                    methodsDefinedInMFile.append(reMethod)
+                                    if reMethod.usedMethod.count > 0 {
+                                        for aUsedMethod in reMethod.usedMethod {
+                                            //将用过的方法添加到集合中
+                                            //todo:现在去重，或者最后去重，以优化空间和速度
+                                            methodsUsed.append(aUsedMethod.pnameId)
+                                        }
+                                    }
+                                    //结束
+                                    mtdContentArr = []
+                                    psMtdTf = false
+                                    psMtdContentTf = false
+                                }
+                            } else {
+                                //解析方法内容中
+                                //先解析使用的方法
+                                mtdContentArr.append(tk)
+                            }
+                            continue
+                        } //方法内容处理
+                        
                         //方法解析
                         //如果-和(没有连接起来直接判断不是方法
                         if psMtdStep == 1 && tk != "(" {
@@ -64,7 +110,7 @@ class ViewController: NSViewController {
                             mtdArr = []
                         }
                         
-                        if (tk == "-" || tk == "+") && psMtdStep == 0 {
+                        if (tk == "-" || tk == "+") && psMtdStep == 0 && !psMtdTf {
                             psMtdTf = true
                             psMtdStep = 1;
                             mtdArr.append(tk)
@@ -73,22 +119,82 @@ class ViewController: NSViewController {
                             mtdArr.append(tk)
                         } else if (tk == ";" || tk == "{") && psMtdStep == 2 && psMtdTf {
                             mtdArr.append(tk)
-                            aFile.methods.append(ParsingMethod().parsingWithArray(arr: mtdArr))
-                            psMtdTf = false
+                            var parsedMethod = ParsingMethod().parsingWithArray(arr: mtdArr)
+                            //开始处理方法内部
+                            if tk == "{" {
+                                psMtdContentClass = parsedMethod
+                                psMtdContentTf = true
+                                psMtdContentBraceCount += 1
+                                mtdContentArr.append(tk)
+                            } else {
+                                aFile.methods.append(parsedMethod)
+                                parsedMethod.filePath = aFile.path //将h文件的路径赋给方法
+                                methodsDefinedInHFile.append(parsedMethod)
+                                psMtdTf = false
+                            }
+                            //重置
                             psMtdStep = 0;
                             mtdArr = []
+                            
                         } else if psMtdTf {
                             mtdArr.append(tk)
                         }
-                    }
+                    } //m和h文件
                     
                 } //遍历tokens
                 files.append(aFile)
-                aFile.des()
+                //aFile.des()
+                
+                
             } //判断地址是否为空
             
-        } //结束遍历
+        } //结束所有文件遍历
 //        print(files)
+        //打印定义方法和使用过的方法
+        
+        /*
+        print("H方法：\(methodsDefinedInHFile.count)个")
+        print("M方法：\(methodsDefinedInMFile.count)个")
+        print("用过方法：\(methodsUsed.count)个")
+        print("\nH方法")
+        for aMethod in methodsDefinedInHFile {
+            print("\(File.desDefineMethodParams(paramArr: aMethod.params))")
+        }
+        print("\nM方法")
+        for aMethod in methodsDefinedInMFile {
+            print("\(File.desDefineMethodParams(paramArr: aMethod.params))")
+        }
+         
+        print("\n用过的方法")
+        for aMethod in methodsUsed {
+            print("\(aMethod)")
+        }
+         */
+        
+        
+        //return
+        //todo:去重
+        let methodsUsedSet = Set(methodsUsed)
+        methodsUsed = Array(methodsUsedSet)
+        //找出h文件中没有用过的方法
+        var unUsedMethods = [Method]()
+        for aHMethod in methodsDefinedInHFile {
+            var hasHMethodUsed = false
+            for aUMethodPNameId in methodsUsed {
+                if aHMethod.pnameId == aUMethodPNameId {
+                    hasHMethodUsed = true
+                    break
+                }
+            }
+            if !hasHMethodUsed {
+                unUsedMethods.append(aHMethod)
+            }
+        }
+        print("无用方法")
+        for aMethod in unUsedMethods {
+            print("\(File.desDefineMethodParams(paramArr: aMethod.params))")
+        }
+        //开始删除
     }
 
     override var representedObject: Any? {
@@ -107,7 +213,7 @@ class ViewController: NSViewController {
         let scanner = Scanner(string: str)
         var tokens = [String]()
         
-        let operaters = ["+","-","(",")","*",":",";","/"," ","<",">","@","\"","#","{","}"]
+        let operaters = ["+","-","(",")","*",":",";","/"," ","<",">","@","\"","#","{","}","[","]"]
         var operatersString = ""
         for op in operaters {
             operatersString = operatersString.appending(op)
@@ -162,7 +268,6 @@ class ViewController: NSViewController {
         
         return ""
     }
-
 
 }
 

@@ -14,6 +14,7 @@
 		0A8672311DB8CE4300CE1292 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8672301DB8CE4300CE1292 /* File.swift */; };
 		0A8672351DB8E82000CE1292 /* ParsingMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8672341DB8E82000CE1292 /* ParsingMethod.swift */; };
 		0A8672371DB8FC0600CE1292 /* ParsingBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8672361DB8FC0600CE1292 /* ParsingBase.swift */; };
+		3A9262D71DBC860600E74505 /* ParsingMethodContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9262D61DBC860600E74505 /* ParsingMethodContent.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		0A8672301DB8CE4300CE1292 /* File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		0A8672341DB8E82000CE1292 /* ParsingMethod.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParsingMethod.swift; sourceTree = "<group>"; };
 		0A8672361DB8FC0600CE1292 /* ParsingBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParsingBase.swift; sourceTree = "<group>"; };
+		3A9262D61DBC860600E74505 /* ParsingMethodContent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParsingMethodContent.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +64,7 @@
 				0A12186C1DAFBEED00ADE8DD /* ViewController.swift */,
 				0A8672301DB8CE4300CE1292 /* File.swift */,
 				0A8672341DB8E82000CE1292 /* ParsingMethod.swift */,
+				3A9262D61DBC860600E74505 /* ParsingMethodContent.swift */,
 				0A8672361DB8FC0600CE1292 /* ParsingBase.swift */,
 				0A12186E1DAFBEED00ADE8DD /* Assets.xcassets */,
 				0A1218701DAFBEED00ADE8DD /* Main.storyboard */,
@@ -144,6 +147,7 @@
 				0A8672371DB8FC0600CE1292 /* ParsingBase.swift in Sources */,
 				0A12186D1DAFBEED00ADE8DD /* ViewController.swift in Sources */,
 				0A8672311DB8CE4300CE1292 /* File.swift in Sources */,
+				3A9262D71DBC860600E74505 /* ParsingMethodContent.swift in Sources */,
 				0A12186B1DAFBEED00ADE8DD /* AppDelegate.swift in Sources */,
 				0A8672351DB8E82000CE1292 /* ParsingMethod.swift in Sources */,
 			);
