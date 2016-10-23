@@ -175,18 +175,10 @@ class ViewController: NSViewController {
         //return
         //todo:去重
         let methodsUsedSet = Set(methodsUsed)
-        methodsUsed = Array(methodsUsedSet)
         //找出h文件中没有用过的方法
         var unUsedMethods = [Method]()
         for aHMethod in methodsDefinedInHFile {
-            var hasHMethodUsed = false
-            for aUMethodPNameId in methodsUsed {
-                if aHMethod.pnameId == aUMethodPNameId {
-                    hasHMethodUsed = true
-                    break
-                }
-            }
-            if !hasHMethodUsed {
+            if !methodsUsedSet.contains(aHMethod.pnameId) {
                 unUsedMethods.append(aHMethod)
             }
         }

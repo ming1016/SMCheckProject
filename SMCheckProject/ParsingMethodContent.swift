@@ -19,7 +19,7 @@ class ParsingMethodContent: ParsingBase {
         var psUMPreTk = ""
         var psUMColonTf = false
         
-        for tk in contentArr {
+        for var tk in contentArr {
             if tk == "[" || tk == "]"{
                 
                 if tk == "[" {
@@ -61,11 +61,11 @@ class ParsingMethodContent: ParsingBase {
                     mtd.pnameId = mtd.pnameId.appending("\(prm.name):")
                 }
                 
-                
                 //重置前一个tk
                 psUMPreTk = ""
                 psUMColonTf = true
             } else if psUMTf {
+                tk = tk.replacingOccurrences(of: "\n", with: "")
                 psUMPreTk = tk
             }
         }

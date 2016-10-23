@@ -18,7 +18,8 @@ class ParsingMethod: ParsingBase {
         var types = [String]()
         var methodParam = MethodParam()
         //print("\(arr)")
-        for tk in arr {
+        for var tk in arr {
+            tk = tk.replacingOccurrences(of: "\n", with: "")
             if (tk == ";" || tk == "{") && step != 1 {
                 mtd.params.append(methodParam)
                 mtd.pnameId = mtd.pnameId.appending("\(methodParam.name):")
