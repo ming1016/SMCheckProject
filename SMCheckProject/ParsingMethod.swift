@@ -68,8 +68,6 @@ class ParsingMethod: ParsingBase {
             
         }//遍历
         
-//        print(mtd.params)
-        
         return mtd
     }
 }

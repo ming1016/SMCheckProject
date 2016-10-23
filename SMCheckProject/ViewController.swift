@@ -49,7 +49,7 @@ class ViewController: NSViewController {
                 
                 aFile.path = fullPath
                 
-                let content =  try! String(contentsOf: fileUrl!, encoding: String.Encoding.utf8)
+                let content = try! String(contentsOf: fileUrl!, encoding: String.Encoding.utf8)
                 
                 //print("文件内容: \(content)")
                 
@@ -183,10 +183,21 @@ class ViewController: NSViewController {
             }
         }
         print("无用方法")
-        for aMethod in unUsedMethods {
+        for var aMethod in unUsedMethods {
             print("\(File.desDefineMethodParams(paramArr: aMethod.params))")
+            //开始删除
+            
+            let hContent = try! String(contentsOf: URL(string:aMethod.filePath)!, encoding: String.Encoding.utf8)
+            var mFilePath = aMethod.filePath.trimmingCharacters(in: CharacterSet(charactersIn: "h")) //去除头尾字符集
+            mFilePath = mFilePath.appending("m")
+            
+            let mContent = try! String(contentsOf: URL(string:mFilePath)!, encoding: String.Encoding.utf8)
+            
+            let hContentArr = hContent.components(separatedBy: CharacterSet.newlines)
+            let mContentArr = mContent.components(separatedBy: CharacterSet.newlines)
+            //print(mContentArr)
         }
-        //开始删除
+        
     }
 
     override var representedObject: Any? {
