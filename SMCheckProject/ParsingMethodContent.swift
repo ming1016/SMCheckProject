@@ -8,8 +8,8 @@
 
 import Cocoa
 
-class ParsingMethodContent: ParsingBase {
-    func parsing(contentArr:Array<String>, inMethod:Method) -> Method {
+class ParsingMethodContent: NSObject {
+    class func parsing(contentArr:Array<String>, inMethod:Method) -> Method {
         var mtdIn = inMethod
         var mtd = Method()
         //处理用过的方法
@@ -42,7 +42,6 @@ class ParsingMethodContent: ParsingBase {
                     if psUMBracketCount == 0 {
                         psUMTf = false
                     }
-                    
                     
                 }
                 

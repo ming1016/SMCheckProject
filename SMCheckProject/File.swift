@@ -82,6 +82,7 @@ struct Method {
     public var classMethodTf = false //+ or -
     public var returnType = ""
     public var returnTypePointTf = false
+    public var returnTypeBlockTf = false
     public var params = [MethodParam]()
     public var usedMethod = [Method]()
     public var filePath = "" //定义方法的文件路径，方便修改文件使用

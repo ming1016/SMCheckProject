@@ -8,8 +8,8 @@
 
 import Cocoa
 
-class ParsingMethod: ParsingBase {
-    func parsingWithArray(arr:Array<String>) -> Method {
+class ParsingMethod: NSObject {
+    class func parsingWithArray(arr:Array<String>) -> Method {
         var mtd = Method()
         var returnTypeTf = false //是否取得返回类型
         var parsingTf = false //解析中
@@ -51,6 +51,10 @@ class ParsingMethod: ParsingBase {
                 }
             } else if parsingTf {
                 types.append(tk)
+                //todo:返回block类型会使用.设置值的方式，目前获取用过方法方式没有.这种的解析，暂时作为
+                if tk == "^" {
+                    mtd.returnTypeBlockTf = true
+                }
             } else if tk == ":" {
                 step = 2
             } else if step == 1 {
