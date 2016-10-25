@@ -52,7 +52,7 @@ class ParsingBase: NSObject {
                 
             }
             //删除无用函数
-            //try! hContent.write(to: URL(string:aMethod.filePath)!, atomically: false, encoding: String.Encoding.utf8)
+            try! hContent.write(to: URL(string:aMethod.filePath)!, atomically: false, encoding: String.Encoding.utf8)
             
             //----------------m文件----------------
             var mDeletingTf = false
@@ -100,10 +100,19 @@ class ParsingBase: NSObject {
             }
             
             //删除无用函数
-            //try! mContentCleaned.write(to: URL(string:mFilePath)!, atomically: false, encoding: String.Encoding.utf8)
-            
+            if mContent.characters.count > 0 {
+                try! mContentCleaned.write(to: URL(string:mFilePath)!, atomically: false, encoding: String.Encoding.utf8)
+            }
             
         }
+    }
+    
+    //根据代码文件解析出一个根据行切分的数组
+    class func createOCLines(content:String) -> [String] {
+        var str = content
+        str = self.dislodgeAnnotaion(content: str)
+        let strArr = str.components(separatedBy: CharacterSet.newlines)
+        return strArr
     }
     
     //根据代码文件解析出一个根据标记符切分的数组
@@ -115,8 +124,8 @@ class ParsingBase: NSObject {
         //开始扫描切割
         let scanner = Scanner(string: str)
         var tokens = [String]()
-        
-        let operaters = ["+","-","(",")","*",":",";","/"," ","<",">","@","\"","#","{","}","[","]"]
+        //Todo:待处理符号,.
+        let operaters = ["+","-","(",")","*",":",";","/","<",">","@","\"","#","{","}","[","]","?"]
         var operatersString = ""
         for op in operaters {
             operatersString = operatersString.appending(op)
@@ -124,6 +133,7 @@ class ParsingBase: NSObject {
         
         var set = CharacterSet()
         set.insert(charactersIn: operatersString)
+        set.formUnion(CharacterSet.whitespacesAndNewlines)
         
         while !scanner.isAtEnd {
             for operater in operaters {

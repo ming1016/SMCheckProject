@@ -52,12 +52,34 @@ class ViewController: NSViewController {
                 //print("文件内容: \(content)")
                 
                 let tokens = ParsingBase.createOCTokens(conent: content)
-                //print(tokens)
-                //#define这种的解析
-//                var defineArr = [String]() //define字符串
-//                var psDefineTf = false
-//                var psDefineStep = 0
+//                print(tokens)
+//                return
                 
+                //----------根据行数切割----------
+                let lines = ParsingBase.createOCLines(content: content)
+                
+                for var aLine in lines {
+                    //清理头尾
+                    aLine = aLine.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+                    if aLine.hasPrefix("#") {
+                        
+                        let tokens = ParsingBase.createOCTokens(conent: aLine)
+                        if tokens.count > 1 {
+                            //define
+                            if tokens[1] == "define" {
+                                let reMethod = ParsingMethodContent.parsing(contentArr: tokens, inMethod: Method())
+                                if reMethod.usedMethod.count > 0 {
+                                    for aUsedMethod in reMethod.usedMethod {
+                                        //将用过的方法添加到集合中
+                                        methodsUsed.append(aUsedMethod.pnameId)
+                                    }
+                                }
+                            } //#define这样的定义
+                        } //token数量是否够
+                    } //#符号开头的
+                } //遍历lines，行数组
+                
+                //---------根据token切割
                 //方法解析
                 var mtdArr = [String]() //方法字符串
                 var psMtdTf = false //是否在解析方法
@@ -71,8 +93,6 @@ class ViewController: NSViewController {
                 for tk in tokens {
                     //h文件 m文件
                     if aFile.type == FileType.fileH || aFile.type == FileType.fileM {
-                        //todo:解析define
-                        
                         
                         //解析方法内容
                         if psMtdContentTf {
@@ -144,6 +164,8 @@ class ViewController: NSViewController {
                         } else if psMtdTf {
                             mtdArr.append(tk)
                         }
+                        
+                        
                     } //m和h文件
                     
                 } //遍历tokens
@@ -151,36 +173,17 @@ class ViewController: NSViewController {
                 //aFile.des()
                 
                 
+                
             } //判断地址是否为空
             
         } //结束所有文件遍历
-//        print(files)
-        //打印定义方法和使用过的方法
         
-        /*
+        //todo:去重
+        let methodsUsedSet = Set(methodsUsed) //用过方法
+        let methodsMFileSet = Set(methodsMFile) //m的映射文件
         print("H方法：\(methodsDefinedInHFile.count)个")
         print("M方法：\(methodsDefinedInMFile.count)个")
         print("用过方法：\(methodsUsed.count)个")
-        print("\nH方法")
-        for aMethod in methodsDefinedInHFile {
-            print("\(File.desDefineMethodParams(paramArr: aMethod.params))")
-        }
-        print("\nM方法")
-        for aMethod in methodsDefinedInMFile {
-            print("\(File.desDefineMethodParams(paramArr: aMethod.params))")
-        }
-         
-        print("\n用过的方法")
-        for aMethod in methodsUsed {
-            print("\(aMethod)")
-        }
-         */
-        
-        
-        //return
-        //todo:去重
-        let methodsUsedSet = Set(methodsUsed) //用过方法
-        let methodsMFileSet = Set(methodsMFile)
         //找出h文件中没有用过的方法
         var unUsedMethods = [Method]()
         for aHMethod in methodsDefinedInHFile {
@@ -198,6 +201,10 @@ class ViewController: NSViewController {
                 //这里判断的是delegate类型，m里一定没有定义，所以这里过滤了各个delegate
                 //todo:处理delegate这样的情况
                 if methodsMFileSet.contains(aHMethod.pnameId) {
+                    //todo:定义一些继承的类，将继承方法加入头文件中的情况
+//                    if aHMethod.pnameId == "responseModelWithData:" {
+//                        continue
+//                    }
                     unUsedMethods.append(aHMethod)
                 }
             }
@@ -221,9 +228,9 @@ class ViewController: NSViewController {
         openPanel.canChooseDirectories = true;
         openPanel.canChooseFiles = false;
         if(openPanel.runModal() == NSModalResponseOK) {
-            print(openPanel.url?.absoluteString)
+            //print(openPanel.url?.absoluteString)
             let path = openPanel.url?.absoluteString
-            print("选择文件夹路径: \(path)")
+            //print("选择文件夹路径: \(path)")
             return path!
         }
         
