@@ -19,14 +19,14 @@ class ParsingMethod: NSObject {
         var methodParam = MethodParam()
         //print("\(arr)")
         for var tk in arr {
-            tk = tk.replacingOccurrences(of: "\n", with: "")
-            if (tk == ";" || tk == "{") && step != 1 {
+            tk = tk.replacingOccurrences(of: Sb.newLine, with: "")
+            if (tk == Sb.semicolon || tk == Sb.braceL) && step != 1 {
                 mtd.params.append(methodParam)
                 mtd.pnameId = mtd.pnameId.appending("\(methodParam.name):")
-            } else if tk == "(" {
+            } else if tk == Sb.rBktL {
                 bracketCount += 1
                 parsingTf = true
-            } else if tk == ")" {
+            } else if tk == Sb.rBktR {
                 bracketCount -= 1
                 if bracketCount == 0 {
                     var typeString = ""
@@ -52,10 +52,10 @@ class ParsingMethod: NSObject {
             } else if parsingTf {
                 types.append(tk)
                 //todo:返回block类型会使用.设置值的方式，目前获取用过方法方式没有.这种的解析，暂时作为
-                if tk == "^" {
+                if tk == Sb.upArrow {
                     mtd.returnTypeBlockTf = true
                 }
-            } else if tk == ":" {
+            } else if tk == Sb.colon {
                 step = 2
             } else if step == 1 {
                 methodParam.name = tk
@@ -66,7 +66,7 @@ class ParsingMethod: NSObject {
                 mtd.params.append(methodParam)
                 mtd.pnameId = mtd.pnameId.appending("\(methodParam.name):")
                 methodParam = MethodParam()
-            } else if tk != "-" && tk != "+" {
+            } else if tk != Sb.minus && tk != Sb.add {
                 methodParam.name = tk
             }
             

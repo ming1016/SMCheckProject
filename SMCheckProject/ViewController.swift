@@ -61,7 +61,7 @@ class ViewController: NSViewController {
                 for var aLine in lines {
                     //清理头尾
                     aLine = aLine.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
-                    if aLine.hasPrefix("#") {
+                    if aLine.hasPrefix(Sb.pSign) {
                         
                         let tokens = ParsingBase.createOCTokens(conent: aLine)
                         if tokens.count > 1 {
@@ -96,10 +96,10 @@ class ViewController: NSViewController {
                         
                         //解析方法内容
                         if psMtdContentTf {
-                            if tk == "{" {
+                            if tk == Sb.braceL {
                                 mtdContentArr.append(tk)
                                 psMtdContentBraceCount += 1
-                            } else if tk == "}" {
+                            } else if tk == Sb.braceR {
                                 mtdContentArr.append(tk)
                                 psMtdContentBraceCount -= 1
                                 if psMtdContentBraceCount == 0 {
@@ -129,24 +129,24 @@ class ViewController: NSViewController {
                         
                         //方法解析
                         //如果-和(没有连接起来直接判断不是方法
-                        if psMtdStep == 1 && tk != "(" {
+                        if psMtdStep == 1 && tk != Sb.rBktL {
                             psMtdStep = 0
                             psMtdTf = false
                             mtdArr = []
                         }
                         
-                        if (tk == "-" || tk == "+") && psMtdStep == 0 && !psMtdTf {
+                        if (tk == Sb.minus || tk == Sb.add) && psMtdStep == 0 && !psMtdTf {
                             psMtdTf = true
                             psMtdStep = 1;
                             mtdArr.append(tk)
-                        } else if tk == "(" && psMtdStep == 1 && psMtdTf {
+                        } else if tk == Sb.rBktL && psMtdStep == 1 && psMtdTf {
                             psMtdStep = 2;
                             mtdArr.append(tk)
-                        } else if (tk == ";" || tk == "{") && psMtdStep == 2 && psMtdTf {
+                        } else if (tk == Sb.semicolon || tk == Sb.braceL) && psMtdStep == 2 && psMtdTf {
                             mtdArr.append(tk)
                             var parsedMethod = ParsingMethod.parsingWithArray(arr: mtdArr)
                             //开始处理方法内部
-                            if tk == "{" {
+                            if tk == Sb.braceL {
                                 psMtdContentClass = parsedMethod
                                 psMtdContentTf = true
                                 psMtdContentBraceCount += 1

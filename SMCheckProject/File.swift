@@ -86,7 +86,7 @@ struct Method {
     public var params = [MethodParam]()
     public var usedMethod = [Method]()
     public var filePath = "" //定义方法的文件路径，方便修改文件使用
-    public var pnameId = ""
+    public var pnameId = ""  //唯一标识，便于快速比较
 }
 
 class MethodParam: NSObject {

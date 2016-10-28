@@ -21,13 +21,13 @@ class ParsingMethodContent: NSObject {
         var psCdtStep = 0
         
         for var tk in contentArr {
-            if tk == "[" {
+            if tk == Sb.bktL {
                 if psCdtTf {
                     psCdtStep += 1
                 }
                 psBrcStep += 1
                 uMtdDic[psBrcStep] = Method()
-            } else if tk == "]" {
+            } else if tk == Sb.bktR {
                 if psCdtTf {
                     psCdtStep -= 1
                 }
@@ -36,14 +36,14 @@ class ParsingMethodContent: NSObject {
                 }
                 psBrcStep -= 1
                 
-            } else if tk == ":" {
+            } else if tk == Sb.colon {
                 //条件简写情况处理
                 if psCdtTf && psCdtStep == 0 {
                     psCdtTf = false
                     continue
                 }
                 //dictionary情况处理@"key":@"value"
-                if preTk == "\"" || preTk == "respondsToSelector" {
+                if preTk == Sb.quotM || preTk == "respondsToSelector" {
                     continue
                 }
                 let prm = MethodParam()
@@ -52,10 +52,10 @@ class ParsingMethodContent: NSObject {
                     uMtdDic[psBrcStep]?.params.append(prm)
                     uMtdDic[psBrcStep]?.pnameId = (uMtdDic[psBrcStep]?.pnameId.appending("\(prm.name):"))!
                 }
-            } else if tk == "?" {
+            } else if tk == Sb.qM {
                 psCdtTf = true
             } else {
-                tk = tk.replacingOccurrences(of: "\n", with: "")
+                tk = tk.replacingOccurrences(of: Sb.newLine, with: "")
                 preTk = tk
             }
         }

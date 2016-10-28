@@ -47,25 +47,25 @@ class ParsingBase: NSObject {
             for hOneLine in hContentArr {
                 var line = hOneLine.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
                 
-                if line.hasPrefix("-") || line.hasPrefix("+") {
+                if line.hasPrefix(Sb.minus) || line.hasPrefix(Sb.add) {
                     psHMtdTf = true
                     hMtds += self.createOCTokens(conent: line)
-                    hMtdStr = hMtdStr.appending(hOneLine + "\n")
+                    hMtdStr = hMtdStr.appending(hOneLine + Sb.newLine)
                     hMtdAnnoStr += "//-----由SMCheckProject工具删除-----\n//"
-                    hMtdAnnoStr += hOneLine + "\n"
+                    hMtdAnnoStr += hOneLine + Sb.newLine
                     line = self.dislodgeAnnotaionInOneLine(content: line)
                     line = line.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
                 } else if psHMtdTf {
                     hMtds += self.createOCTokens(conent: line)
-                    hMtdStr = hMtdStr.appending(hOneLine + "\n")
-                    hMtdAnnoStr += "//" + hOneLine + "\n"
+                    hMtdStr = hMtdStr.appending(hOneLine + Sb.newLine)
+                    hMtdAnnoStr += "//" + hOneLine + Sb.newLine
                     line = self.dislodgeAnnotaionInOneLine(content: line)
                     line = line.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
                 } else {
-                    hContentCleaned += hOneLine + "\n"
+                    hContentCleaned += hOneLine + Sb.newLine
                 }
                 
-                if line.hasSuffix(";") && psHMtdTf{
+                if line.hasSuffix(Sb.semicolon) && psHMtdTf{
                     psHMtdTf = false
                     
                     let methodPnameId = ParsingMethod.parsingWithArray(arr: hMtds).pnameId
@@ -98,12 +98,12 @@ class ParsingBase: NSObject {
                 
                 if mDeletingTf {
                     let lTokens = self.createOCTokens(conent: line)
-                    mMtdAnnoStr += "//" + mOneLine + "\n"
+                    mMtdAnnoStr += "//" + mOneLine + Sb.newLine
                     for tk in lTokens {
-                        if tk == "{" {
+                        if tk == Sb.braceL {
                             mBraceCount += 1
                         }
-                        if tk == "}" {
+                        if tk == Sb.braceR {
                             mBraceCount -= 1
                             if mBraceCount == 0 {
                                 mContentCleaned = mContentCleaned.appending(mMtdAnnoStr)
@@ -117,20 +117,20 @@ class ParsingBase: NSObject {
                 }
                 
                 
-                if line.hasPrefix("-") || line.hasPrefix("+") {
+                if line.hasPrefix(Sb.minus) || line.hasPrefix(Sb.add) {
                     psMMtdTf = true
                     mMtds += self.createOCTokens(conent: line)
-                    mMtdStr = mMtdStr.appending(mOneLine + "\n")
-                    mMtdAnnoStr += "//-----由SMCheckProject工具删除-----\n//" + mOneLine + "\n"
+                    mMtdStr = mMtdStr.appending(mOneLine + Sb.newLine)
+                    mMtdAnnoStr += "//-----由SMCheckProject工具删除-----\n//" + mOneLine + Sb.newLine
                 } else if psMMtdTf {
-                    mMtdStr = mMtdStr.appending(mOneLine + "\n")
-                    mMtdAnnoStr += "//" + mOneLine + "\n"
+                    mMtdStr = mMtdStr.appending(mOneLine + Sb.newLine)
+                    mMtdAnnoStr += "//" + mOneLine + Sb.newLine
                     mMtds += self.createOCTokens(conent: line)
                 } else {
-                    mContentCleaned = mContentCleaned.appending(mOneLine + "\n")
+                    mContentCleaned = mContentCleaned.appending(mOneLine + Sb.newLine)
                 }
                 
-                if line.hasSuffix("{") && psMMtdTf {
+                if line.hasSuffix(Sb.braceL) && psMMtdTf {
                     psMMtdTf = false
                     let methodPnameId = ParsingMethod.parsingWithArray(arr: mMtds).pnameId
                     if aMethod.pnameId == methodPnameId {
@@ -173,7 +173,7 @@ class ParsingBase: NSObject {
         let scanner = Scanner(string: str)
         var tokens = [String]()
         //Todo:待处理符号,.
-        let operaters = ["+","-","(",")","*",":",";","/","<",">","\"","#","{","}","[","]","?"]
+        let operaters = [Sb.add,Sb.minus,Sb.rBktL,Sb.rBktR,Sb.asterisk,Sb.colon,Sb.semicolon,Sb.divide,Sb.agBktL,Sb.agBktR,Sb.quotM,Sb.pSign,Sb.braceL,Sb.braceR,Sb.bktL,Sb.bktR,Sb.qM]
         var operatersString = ""
         for op in operaters {
             operatersString = operatersString.appending(op)
@@ -197,7 +197,7 @@ class ParsingBase: NSObject {
             }
         }
         tokens = tokens.filter {
-            $0 != " "
+            $0 != Sb.space
         }
         return tokens;
     }
@@ -211,8 +211,8 @@ class ParsingBase: NSObject {
         let regexBlock = try! NSRegularExpression(pattern: annotationBlockPattern, options: NSRegularExpression.Options(rawValue:0))
         let regexLine = try! NSRegularExpression(pattern: annotationLinePattern, options: NSRegularExpression.Options(rawValue:0))
         var newStr = ""
-        newStr = regexLine.stringByReplacingMatches(in: content, options: NSRegularExpression.MatchingOptions(rawValue:0), range: NSMakeRange(0, content.characters.count), withTemplate: " ")
-        newStr = regexBlock.stringByReplacingMatches(in: newStr, options: NSRegularExpression.MatchingOptions(rawValue:0), range: NSMakeRange(0, newStr.characters.count), withTemplate: " ")
+        newStr = regexLine.stringByReplacingMatches(in: content, options: NSRegularExpression.MatchingOptions(rawValue:0), range: NSMakeRange(0, content.characters.count), withTemplate: Sb.space)
+        newStr = regexBlock.stringByReplacingMatches(in: newStr, options: NSRegularExpression.MatchingOptions(rawValue:0), range: NSMakeRange(0, newStr.characters.count), withTemplate: Sb.space)
         return newStr
     }
     //一行内清理注释
