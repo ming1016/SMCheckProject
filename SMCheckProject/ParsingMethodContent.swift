@@ -43,7 +43,7 @@ class ParsingMethodContent: NSObject {
                     continue
                 }
                 //dictionary情况处理@"key":@"value"
-                if preTk == "\"" {
+                if preTk == "\"" || preTk == "respondsToSelector" {
                     continue
                 }
                 let prm = MethodParam()

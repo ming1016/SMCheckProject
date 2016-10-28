@@ -183,7 +183,7 @@ class ViewController: NSViewController {
         let methodsMFileSet = Set(methodsMFile) //m的映射文件
         print("H方法：\(methodsDefinedInHFile.count)个")
         print("M方法：\(methodsDefinedInMFile.count)个")
-        print("用过方法：\(methodsUsed.count)个")
+        print("用过方法(包括系统的)：\(methodsUsed.count)个")
         //找出h文件中没有用过的方法
         var unUsedMethods = [Method]()
         for aHMethod in methodsDefinedInHFile {

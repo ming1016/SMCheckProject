@@ -9,7 +9,6 @@
 import Cocoa
 
 class ParsingBase: NSObject {
-    
     //删除指定的一组方法
     class func delete(methods:[Method]) {
         print("无用方法")
@@ -40,37 +39,75 @@ class ParsingBase: NSObject {
             let mContentArr = mContent.components(separatedBy: CharacterSet.newlines)
             //print(mContentArr)
             //----------------h文件------------------
+            var psHMtdTf = false
+            var hMtds = [String]()
+            var hMtdStr = ""
+            var hMtdAnnoStr = ""
+            var hContentCleaned = ""
             for hOneLine in hContentArr {
-                let line = hOneLine.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+                var line = hOneLine.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+                
                 if line.hasPrefix("-") || line.hasPrefix("+") {
-                    let tokens = self.createOCTokens(conent: line)
-                    let methodPnameId = ParsingMethod.parsingWithArray(arr: tokens).pnameId
-                    if aMethod.pnameId == methodPnameId {
-                        hContent = hContent.replacingOccurrences(of: hOneLine, with: "")
-                    }
+                    psHMtdTf = true
+                    hMtds += self.createOCTokens(conent: line)
+                    hMtdStr = hMtdStr.appending(hOneLine + "\n")
+                    hMtdAnnoStr += "//-----由SMCheckProject工具删除-----\n//"
+                    hMtdAnnoStr += hOneLine + "\n"
+                    line = self.dislodgeAnnotaionInOneLine(content: line)
+                    line = line.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+                } else if psHMtdTf {
+                    hMtds += self.createOCTokens(conent: line)
+                    hMtdStr = hMtdStr.appending(hOneLine + "\n")
+                    hMtdAnnoStr += "//" + hOneLine + "\n"
+                    line = self.dislodgeAnnotaionInOneLine(content: line)
+                    line = line.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+                } else {
+                    hContentCleaned += hOneLine + "\n"
                 }
+                
+                if line.hasSuffix(";") && psHMtdTf{
+                    psHMtdTf = false
+                    
+                    let methodPnameId = ParsingMethod.parsingWithArray(arr: hMtds).pnameId
+                    if aMethod.pnameId == methodPnameId {
+                        hContentCleaned += hMtdAnnoStr
+                        
+                    } else {
+                        hContentCleaned += hMtdStr
+                    }
+                    hMtdAnnoStr = ""
+                    hMtdStr = ""
+                    hMtds = []
+                }
+                
                 
             }
             //删除无用函数
-            try! hContent.write(to: URL(string:aMethod.filePath)!, atomically: false, encoding: String.Encoding.utf8)
+            try! hContentCleaned.write(to: URL(string:aMethod.filePath)!, atomically: false, encoding: String.Encoding.utf8)
             
             //----------------m文件----------------
             var mDeletingTf = false
             var mBraceCount = 0
             var mContentCleaned = ""
+            var mMtdStr = ""
+            var mMtdAnnoStr = ""
+            var mMtds = [String]()
+            var psMMtdTf = false
             for mOneLine in mContentArr {
                 let line = mOneLine.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
                 
                 if mDeletingTf {
                     let lTokens = self.createOCTokens(conent: line)
+                    mMtdAnnoStr += "//" + mOneLine + "\n"
                     for tk in lTokens {
-                        
                         if tk == "{" {
                             mBraceCount += 1
                         }
                         if tk == "}" {
                             mBraceCount -= 1
                             if mBraceCount == 0 {
+                                mContentCleaned = mContentCleaned.appending(mMtdAnnoStr)
+                                mMtdAnnoStr = ""
                                 mDeletingTf = false
                             }
                         }
@@ -79,25 +116,36 @@ class ParsingBase: NSObject {
                     continue
                 }
                 
+                
                 if line.hasPrefix("-") || line.hasPrefix("+") {
-                    var methodLine = line
-                    if !line.hasSuffix("{") {
-                        methodLine = line.appending("{")
-                    }
-                    let tokens = self.createOCTokens(conent: methodLine)
-                    let methodPnameId = ParsingMethod.parsingWithArray(arr: tokens).pnameId
-                    if aMethod.pnameId == methodPnameId {
-                        mDeletingTf = true
-                        if line.hasSuffix("{") {
-                            mBraceCount += 1
-                        }
-                    } else {
-                        mContentCleaned = mContentCleaned.appending(mOneLine + "\n")
-                    }
+                    psMMtdTf = true
+                    mMtds += self.createOCTokens(conent: line)
+                    mMtdStr = mMtdStr.appending(mOneLine + "\n")
+                    mMtdAnnoStr += "//-----由SMCheckProject工具删除-----\n//" + mOneLine + "\n"
+                } else if psMMtdTf {
+                    mMtdStr = mMtdStr.appending(mOneLine + "\n")
+                    mMtdAnnoStr += "//" + mOneLine + "\n"
+                    mMtds += self.createOCTokens(conent: line)
                 } else {
                     mContentCleaned = mContentCleaned.appending(mOneLine + "\n")
                 }
-            }
+                
+                if line.hasSuffix("{") && psMMtdTf {
+                    psMMtdTf = false
+                    let methodPnameId = ParsingMethod.parsingWithArray(arr: mMtds).pnameId
+                    if aMethod.pnameId == methodPnameId {
+                        mDeletingTf = true
+                        mBraceCount += 1
+                        mContentCleaned = mContentCleaned.appending(mMtdAnnoStr)
+                    } else {
+                        mContentCleaned = mContentCleaned.appending(mMtdStr)
+                    }
+                    mMtdStr = ""
+                    mMtdAnnoStr = ""
+                    mMtds = []
+                }
+                
+            } //m文件
             
             //删除无用函数
             if mContent.characters.count > 0 {
@@ -125,7 +173,7 @@ class ParsingBase: NSObject {
         let scanner = Scanner(string: str)
         var tokens = [String]()
         //Todo:待处理符号,.
-        let operaters = ["+","-","(",")","*",":",";","/","<",">","@","\"","#","{","}","[","]","?"]
+        let operaters = ["+","-","(",")","*",":",";","/","<",">","\"","#","{","}","[","]","?"]
         var operatersString = ""
         for op in operaters {
             operatersString = operatersString.appending(op)
@@ -165,6 +213,15 @@ class ParsingBase: NSObject {
         var newStr = ""
         newStr = regexLine.stringByReplacingMatches(in: content, options: NSRegularExpression.MatchingOptions(rawValue:0), range: NSMakeRange(0, content.characters.count), withTemplate: " ")
         newStr = regexBlock.stringByReplacingMatches(in: newStr, options: NSRegularExpression.MatchingOptions(rawValue:0), range: NSMakeRange(0, newStr.characters.count), withTemplate: " ")
+        return newStr
+    }
+    //一行内清理注释
+    class func dislodgeAnnotaionInOneLine(content:String) -> String {
+        let annotationLinePattern = "//[\\s\\S]*?$" //匹配//这样的注释
+        
+        let regexLine = try! NSRegularExpression(pattern: annotationLinePattern, options: NSRegularExpression.Options(rawValue:0))
+        var newStr = ""
+        newStr = regexLine.stringByReplacingMatches(in: content, options: NSRegularExpression.MatchingOptions(rawValue:0), range: NSMakeRange(0, content.characters.count), withTemplate: "")
         return newStr
     }
 }
