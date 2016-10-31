@@ -83,7 +83,12 @@ class ParsingBase: NSObject {
                 
             }
             //删除无用函数
-            try! hContentCleaned.write(to: URL(string:aMethod.filePath)!, atomically: false, encoding: String.Encoding.utf8)
+            do {
+                try hContentCleaned.write(to: URL(string:aMethod.filePath)!, atomically: false, encoding: String.Encoding.utf8)
+            } catch  {
+                //
+            }
+            
             
             //----------------m文件----------------
             var mDeletingTf = false
@@ -149,7 +154,12 @@ class ParsingBase: NSObject {
             
             //删除无用函数
             if mContent.characters.count > 0 {
-                try! mContentCleaned.write(to: URL(string:mFilePath)!, atomically: false, encoding: String.Encoding.utf8)
+                do {
+                    try mContentCleaned.write(to: URL(string:mFilePath)!, atomically: false, encoding: String.Encoding.utf8)
+                } catch {
+                    //
+                }
+                
             }
             
         }
