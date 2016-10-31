@@ -19,8 +19,36 @@ class ParsingMethodContent: NSObject {
         //处理?:这种条件判断简写方式
         var psCdtTf = false
         var psCdtStep = 0
+        //判断selector
+        var psSelectorTf = false
+        var preSelectorTk = ""
+        var selectorMtd = Method()
+        var selectorMtdPar = MethodParam()
         
         for var tk in contentArr {
+            //selector处理
+            if psSelectorTf {
+                if tk == Sb.colon {
+                    selectorMtdPar.name = preSelectorTk
+                    selectorMtd.params.append(selectorMtdPar)
+                    selectorMtd.pnameId += "\(selectorMtdPar.name):"
+                } else if tk == Sb.rBktR {
+                    mtdIn.usedMethod.append(selectorMtd)
+                    psSelectorTf = false
+                    selectorMtd = Method()
+                    selectorMtdPar = MethodParam()
+                } else {
+                    preSelectorTk = tk
+                }
+                continue
+            }
+            if tk == "@selector" {
+                psSelectorTf = true
+                selectorMtd = Method()
+                selectorMtdPar = MethodParam()
+                continue
+            }
+            //通常处理
             if tk == Sb.bktL {
                 if psCdtTf {
                     psCdtStep += 1

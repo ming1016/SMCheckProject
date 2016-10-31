@@ -21,8 +21,21 @@ class ParsingMethod: NSObject {
         for var tk in arr {
             tk = tk.replacingOccurrences(of: Sb.newLine, with: "")
             if (tk == Sb.semicolon || tk == Sb.braceL) && step != 1 {
-                mtd.params.append(methodParam)
-                mtd.pnameId = mtd.pnameId.appending("\(methodParam.name):")
+                var shouldAdd = false
+                
+                if mtd.params.count > 1 {
+                    //处理这种- (void)initWithC:(type)m m2:(type2)i, ... NS_REQUIRES_NIL_TERMINATION;入参为多参数情况
+                    if methodParam.type.characters.count > 0 {
+                        shouldAdd = true
+                    }
+                } else {
+                    shouldAdd = true
+                }
+                if shouldAdd {
+                    mtd.params.append(methodParam)
+                    mtd.pnameId = mtd.pnameId.appending("\(methodParam.name):")
+                }
+                
             } else if tk == Sb.rBktL {
                 bracketCount += 1
                 parsingTf = true
@@ -58,6 +71,9 @@ class ParsingMethod: NSObject {
             } else if tk == Sb.colon {
                 step = 2
             } else if step == 1 {
+                if tk == "initWithCoordinate" {
+                    //
+                }
                 methodParam.name = tk
                 step = 0
             } else if step == 3 {
