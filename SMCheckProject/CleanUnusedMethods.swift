@@ -9,7 +9,8 @@
 import Cocoa
 
 class CleanUnusedMethods: NSObject {
-    func clean(path: String) {
+    
+    func find(path: String) -> [Method]{
         let fileFolderPath = path
         let fileFolderStringPath = fileFolderPath.replacingOccurrences(of: "file://", with: "")
         let fileManager = FileManager.default;
@@ -202,7 +203,12 @@ class CleanUnusedMethods: NSObject {
             }
         }
         
-        //删除
-        ParsingBase.delete(methods: unUsedMethods)
+        return unUsedMethods
     }
+    
+    func clean(methods:[Method]) {
+        //删除
+        ParsingBase.delete(methods: methods)
+    }
+    
 }
