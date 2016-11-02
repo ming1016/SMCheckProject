@@ -8,7 +8,7 @@
 
 import Cocoa
 
-class ViewController: NSViewController,NSTableViewDataSource,NSTableViewDelegate {
+class ViewController: NSViewController,NSTableViewDataSource,NSTableViewDelegate,DragViewDelegate {
     
     @IBOutlet weak var parsingIndicator: NSProgressIndicator!
     @IBOutlet weak var desLb: NSTextField!
@@ -16,9 +16,20 @@ class ViewController: NSViewController,NSTableViewDataSource,NSTableViewDelegate
     @IBOutlet weak var pathDes: NSTextField!
     @IBOutlet weak var cleanBt: NSButton!
     @IBOutlet weak var resultTb: NSTableView!
+    @IBOutlet weak var dragView: DragView!
     
     var unusedMethods = [Method]() //无用方法
-    var selectedPath = ""
+    var selectedPath : String = "" {
+        didSet {
+            if selectedPath.characters.count > 0 {
+                cleanUnuseMethodBt.title = "查找"
+                let ud = UserDefaults()
+                ud.set(selectedPath, forKey: "selectedPath")
+                ud.synchronize()
+                pathDes.stringValue = selectedPath.replacingOccurrences(of: "file://", with: "")
+            }
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,10 +38,41 @@ class ViewController: NSViewController,NSTableViewDataSource,NSTableViewDelegate
         pathDes.stringValue = "请选择工程目录"
         cleanBt.isEnabled = false
         resultTb.doubleAction = #selector(cellDoubleClick)
+        if (UserDefaults().object(forKey: "selectedPath") != nil) {
+            selectedPath = UserDefaults().value(forKey: "selectedPath") as! String
+        }
+        
+    }
+    
+    override func awakeFromNib() {
+        dragView.delegate = self
     }
     
     @IBAction func cleanUnuseMethodAction(_ sender: AnyObject) {
-        selectedPath = self.selectFolder()
+        if selectedPath.characters.count > 0 {
+        } else {
+            selectedPath = self.selectFolder()
+        }
+        self.searchingUnusedMethods()
+    }
+    
+    @IBAction func cleanMethodsAction(_ sender: AnyObject) {
+        desLb.stringValue = "清理中..."
+        cleanBt.isEnabled = false
+        parsingIndicator.startAnimation(nil)
+        DispatchQueue.global().async {
+            CleanUnusedMethods().clean(methods: self.unusedMethods)
+            DispatchQueue.main.async {
+                self.cleanBt.isEnabled = true
+                self.parsingIndicator.stopAnimation(nil)
+                self.parsingIndicator.isHidden = true
+                self.desLb.stringValue = "完成清理"
+            }
+        }
+    }
+    
+    //Priavte
+    private func searchingUnusedMethods() {
         parsingIndicator.isHidden = false
         parsingIndicator.startAnimation(nil)
         desLb.stringValue = "查找中..."
@@ -48,29 +90,8 @@ class ViewController: NSViewController,NSTableViewDataSource,NSTableViewDelegate
         }
     }
     
-    @IBAction func cleanMethodsAction(_ sender: AnyObject) {
-        desLb.stringValue = "清理中..."
-        cleanBt.isEnabled = false
-        parsingIndicator.startAnimation(nil)
-        DispatchQueue.global().async {
-            CleanUnusedMethods().clean(methods: self.unusedMethods)
-            DispatchQueue.main.async {
-                self.cleanBt.isEnabled = true
-                self.parsingIndicator.stopAnimation(nil)
-                self.parsingIndicator.isHidden = true
-                self.desLb.stringValue = "完成清理"
-            }
-        }
-    }
-
-    override var representedObject: Any? {
-        didSet {
-        // Update the view, if already loaded.
-        }
-    }
-    
     //选择一个文件夹
-    func selectFolder() -> String {
+    private func selectFolder() -> String {
         let openPanel = NSOpenPanel();
         openPanel.canChooseDirectories = true;
         openPanel.canChooseFiles = false;
@@ -113,6 +134,17 @@ class ViewController: NSViewController,NSTableViewDataSource,NSTableViewDelegate
         return nil
     }
     
-
+    //DragViewDelegate
+    func dragExit() {
+        //
+    }
+    func dragEnter() {
+        //
+    }
+    func dragFileOk(filePath: String) {
+        print("\(filePath)")
+        selectedPath = "file://" + filePath + "/"
+        pathDes.stringValue = selectedPath.replacingOccurrences(of: "file://", with: "")
+    }
 }
 

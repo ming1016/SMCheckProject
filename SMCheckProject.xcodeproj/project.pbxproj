@@ -12,6 +12,7 @@
 		0A12186F1DAFBEED00ADE8DD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0A12186E1DAFBEED00ADE8DD /* Assets.xcassets */; };
 		0A1218721DAFBEED00ADE8DD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0A1218701DAFBEED00ADE8DD /* Main.storyboard */; };
 		0A13866E1DBF9CA70075D236 /* Sb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A13866D1DBF9CA70075D236 /* Sb.swift */; };
+		0A24BAB71DC8D87600848F04 /* DragView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A24BAB61DC8D87600848F04 /* DragView.swift */; };
 		0A2AF81B1DC7564A0050B562 /* CleanUnusedMethods.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2AF81A1DC7564A0050B562 /* CleanUnusedMethods.swift */; };
 		0A8672311DB8CE4300CE1292 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8672301DB8CE4300CE1292 /* File.swift */; };
 		0A8672351DB8E82000CE1292 /* ParsingMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8672341DB8E82000CE1292 /* ParsingMethod.swift */; };
@@ -27,6 +28,7 @@
 		0A1218711DAFBEED00ADE8DD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		0A1218731DAFBEED00ADE8DD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0A13866D1DBF9CA70075D236 /* Sb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sb.swift; sourceTree = "<group>"; };
+		0A24BAB61DC8D87600848F04 /* DragView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DragView.swift; sourceTree = "<group>"; };
 		0A2AF81A1DC7564A0050B562 /* CleanUnusedMethods.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CleanUnusedMethods.swift; sourceTree = "<group>"; };
 		0A8672301DB8CE4300CE1292 /* File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		0A8672341DB8E82000CE1292 /* ParsingMethod.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParsingMethod.swift; sourceTree = "<group>"; };
@@ -67,6 +69,7 @@
 				0A12186A1DAFBEED00ADE8DD /* AppDelegate.swift */,
 				0A12186C1DAFBEED00ADE8DD /* ViewController.swift */,
 				0A8672301DB8CE4300CE1292 /* File.swift */,
+				0A24BAB61DC8D87600848F04 /* DragView.swift */,
 				0A2AF8191DC756190050B562 /* Feature */,
 				0A2AF8181DC756050050B562 /* Parsing */,
 				0A12186E1DAFBEED00ADE8DD /* Assets.xcassets */,
@@ -174,6 +177,7 @@
 				0A12186B1DAFBEED00ADE8DD /* AppDelegate.swift in Sources */,
 				0A2AF81B1DC7564A0050B562 /* CleanUnusedMethods.swift in Sources */,
 				0A8672351DB8E82000CE1292 /* ParsingMethod.swift in Sources */,
+				0A24BAB71DC8D87600848F04 /* DragView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
