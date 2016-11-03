@@ -18,6 +18,7 @@
 		0A8672351DB8E82000CE1292 /* ParsingMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8672341DB8E82000CE1292 /* ParsingMethod.swift */; };
 		0A8672371DB8FC0600CE1292 /* ParsingBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8672361DB8FC0600CE1292 /* ParsingBase.swift */; };
 		3A9262D71DBC860600E74505 /* ParsingMethodContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9262D61DBC860600E74505 /* ParsingMethodContent.swift */; };
+		F9127F3D65BC448371541BC2 /* Pods_SMCheckProject.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7698ED9B767599D2C14EC463 /* Pods_SMCheckProject.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,7 +34,10 @@
 		0A8672301DB8CE4300CE1292 /* File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		0A8672341DB8E82000CE1292 /* ParsingMethod.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParsingMethod.swift; sourceTree = "<group>"; };
 		0A8672361DB8FC0600CE1292 /* ParsingBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParsingBase.swift; sourceTree = "<group>"; };
+		1D00FD81E243B94178CB346E /* Pods-SMCheckProject.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SMCheckProject.release.xcconfig"; path = "Pods/Target Support Files/Pods-SMCheckProject/Pods-SMCheckProject.release.xcconfig"; sourceTree = "<group>"; };
 		3A9262D61DBC860600E74505 /* ParsingMethodContent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParsingMethodContent.swift; sourceTree = "<group>"; };
+		4E8AF9FDD05066A3E6CEC302 /* Pods-SMCheckProject.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SMCheckProject.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SMCheckProject/Pods-SMCheckProject.debug.xcconfig"; sourceTree = "<group>"; };
+		7698ED9B767599D2C14EC463 /* Pods_SMCheckProject.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SMCheckProject.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,6 +45,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F9127F3D65BC448371541BC2 /* Pods_SMCheckProject.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -52,6 +57,8 @@
 			children = (
 				0A1218691DAFBEED00ADE8DD /* SMCheckProject */,
 				0A1218681DAFBEED00ADE8DD /* Products */,
+				BB1E8E91F1090CE8CEDAD30F /* Pods */,
+				8A44186870EF7A75906186CC /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -98,6 +105,23 @@
 			name = Feature;
 			sourceTree = "<group>";
 		};
+		8A44186870EF7A75906186CC /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				7698ED9B767599D2C14EC463 /* Pods_SMCheckProject.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		BB1E8E91F1090CE8CEDAD30F /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				4E8AF9FDD05066A3E6CEC302 /* Pods-SMCheckProject.debug.xcconfig */,
+				1D00FD81E243B94178CB346E /* Pods-SMCheckProject.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -105,9 +129,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0A1218761DAFBEED00ADE8DD /* Build configuration list for PBXNativeTarget "SMCheckProject" */;
 			buildPhases = (
+				2727F224E729D913E2982AB6 /* [CP] Check Pods Manifest.lock */,
 				0A1218631DAFBEED00ADE8DD /* Sources */,
 				0A1218641DAFBEED00ADE8DD /* Frameworks */,
 				0A1218651DAFBEED00ADE8DD /* Resources */,
+				525F6CAA201DA78F394F83CB /* [CP] Embed Pods Frameworks */,
+				3030667CE8B262EEBF2090BE /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -163,6 +190,54 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		2727F224E729D913E2982AB6 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		3030667CE8B262EEBF2090BE /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SMCheckProject/Pods-SMCheckProject-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		525F6CAA201DA78F394F83CB /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SMCheckProject/Pods-SMCheckProject-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		0A1218631DAFBEED00ADE8DD /* Sources */ = {
@@ -287,6 +362,7 @@
 		};
 		0A1218771DAFBEED00ADE8DD /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4E8AF9FDD05066A3E6CEC302 /* Pods-SMCheckProject.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -300,6 +376,7 @@
 		};
 		0A1218781DAFBEED00ADE8DD /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1D00FD81E243B94178CB346E /* Pods-SMCheckProject.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;

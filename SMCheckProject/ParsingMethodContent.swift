@@ -25,6 +25,8 @@ class ParsingMethodContent: NSObject {
         var selectorMtd = Method()
         var selectorMtdPar = MethodParam()
         
+        uMtdDic[psBrcStep] = Method()
+        
         for var tk in contentArr {
             //selector处理
             if psSelectorTf {
@@ -63,6 +65,10 @@ class ParsingMethodContent: NSObject {
                     mtdIn.usedMethod.append(uMtdDic[psBrcStep]!)
                 }
                 psBrcStep -= 1
+                //[]不配对的容错处理
+                if psBrcStep < 0 {
+                    psBrcStep = 0
+                }
                 
             } else if tk == Sb.colon {
                 //条件简写情况处理
