@@ -8,22 +8,22 @@
 
 import Cocoa
 import SnapKit
+import RxSwift
 
 class ViewController: NSViewController,NSTableViewDataSource,NSTableViewDelegate,DragViewDelegate {
     
     @IBOutlet weak var parsingIndicator: NSProgressIndicator!
     @IBOutlet weak var desLb: NSTextField!
-    @IBOutlet weak var cleanUnuseMethodBt: NSButton!
     @IBOutlet weak var pathDes: NSTextField!
     @IBOutlet weak var cleanBt: NSButton!
     @IBOutlet weak var resultTb: NSTableView!
     @IBOutlet weak var dragView: DragView!
+    @IBOutlet weak var seachBt: NSButtonCell!
     
     var unusedMethods = [Method]() //无用方法
     var selectedPath : String = "" {
         didSet {
             if selectedPath.characters.count > 0 {
-                cleanUnuseMethodBt.title = "查找"
                 let ud = UserDefaults()
                 ud.set(selectedPath, forKey: "selectedPath")
                 ud.synchronize()
@@ -43,21 +43,21 @@ class ViewController: NSViewController,NSTableViewDataSource,NSTableViewDelegate
             selectedPath = UserDefaults().value(forKey: "selectedPath") as! String
         }
         
-        
     }
     
     override func awakeFromNib() {
         dragView.delegate = self
     }
     
-    @IBAction func cleanUnuseMethodAction(_ sender: AnyObject) {
+    //查找按钮
+    @IBAction func searchMethodAction(_ sender: Any) {
         if selectedPath.characters.count > 0 {
-        } else {
-            selectedPath = self.selectFolder()
+            self.searchingUnusedMethods()
         }
-        self.searchingUnusedMethods()
+        
     }
     
+    //清理按钮
     @IBAction func cleanMethodsAction(_ sender: AnyObject) {
         desLb.stringValue = "清理中..."
         cleanBt.isEnabled = false
@@ -81,7 +81,17 @@ class ViewController: NSViewController,NSTableViewDataSource,NSTableViewDelegate
         cleanBt.isEnabled = false
         pathDes.stringValue = selectedPath.replacingOccurrences(of: "file://", with: "")
         DispatchQueue.global().async {
-            self.unusedMethods = CleanUnusedMethods().find(path: self.selectedPath)
+//            self.unusedMethods = CleanUnusedMethods().find(path: self.selectedPath)
+            _ = CleanUnusedMethods().find(path: self.selectedPath).subscribe(onNext: { (result) in
+                if result is String {
+                    DispatchQueue.main.async {
+                        self.desLb.stringValue = result as! String
+                    }
+                    
+                } else if result is [Method] {
+                    self.unusedMethods = result as! [Method]
+                }
+            })
             DispatchQueue.main.async {
                 self.cleanBt.isEnabled = true
                 self.parsingIndicator.stopAnimation(nil)
@@ -90,6 +100,7 @@ class ViewController: NSViewController,NSTableViewDataSource,NSTableViewDelegate
                 self.resultTb.reloadData()
             }
         }
+        
     }
     
     //选择一个文件夹

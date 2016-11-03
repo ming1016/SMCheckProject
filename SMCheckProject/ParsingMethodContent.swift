@@ -25,7 +25,7 @@ class ParsingMethodContent: NSObject {
         var selectorMtd = Method()
         var selectorMtdPar = MethodParam()
         
-        uMtdDic[psBrcStep] = Method()
+        uMtdDic[psBrcStep] = Method() //初始时就实例化一个method，避免在define里定义只定义]符号
         
         for var tk in contentArr {
             //selector处理

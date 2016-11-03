@@ -664,8 +664,8 @@
         <scene sceneID="R2V-B0-nI4">
             <objects>
                 <windowController id="B8D-0N-5wS" sceneMemberID="viewController">
-                    <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="IQv-IB-iLA">
-                        <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
+                    <window key="window" title="SMCheckProject工程检测" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="IQv-IB-iLA">
+                        <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" texturedBackground="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="196" y="240" width="680" height="434"/>
                         <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
@@ -691,7 +691,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <subviews>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9O1-fs-eDL">
-                                        <rect key="frame" x="91" y="394" width="412" height="20"/>
+                                        <rect key="frame" x="91" y="394" width="476" height="20"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Label" id="6Og-15-IQI">
                                             <font key="font" metaFont="system"/>
@@ -700,24 +700,33 @@
                                         </textFieldCell>
                                     </textField>
                                     <progressIndicator wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" maxValue="100" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="rZ5-yv-iBb">
-                                        <rect key="frame" x="515" y="396" width="16" height="16"/>
+                                        <rect key="frame" x="573" y="396" width="16" height="16"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     </progressIndicator>
+                                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="SXJ-KV-MuF">
+                                        <rect key="frame" x="591" y="386" width="75" height="32"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <buttonCell key="cell" type="push" title="查找" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="i1I-ex-zPP">
+                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                            <font key="font" metaFont="system"/>
+                                            <connections>
+                                                <action selector="searchMethodAction:" target="XfG-lQ-9wD" id="EbZ-WU-Wjy"/>
+                                            </connections>
+                                        </buttonCell>
+                                    </button>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ck8-at-m08">
+                                        <rect key="frame" x="474" y="368" width="188" height="17"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="将工程目录拖拽到这里" id="SDw-2I-bVA">
+                                            <font key="font" size="18" name=".PingFangSC-Regular"/>
+                                            <color key="textColor" red="0.68128643134715028" green="0.68128643134715028" blue="0.68128643134715028" alpha="0.84999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
                                 </subviews>
                             </customView>
-                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ied-B2-BaK">
-                                <rect key="frame" x="541" y="386" width="125" height="32"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <buttonCell key="cell" type="push" title="选择工程目录" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="9kV-Mu-rfi">
-                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                    <font key="font" size="13" name=".PingFangSC-Regular"/>
-                                </buttonCell>
-                                <connections>
-                                    <action selector="cleanUnuseMethodAction:" target="XfG-lQ-9wD" id="IBo-cJ-LNQ"/>
-                                </connections>
-                            </button>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BHh-bh-ZYB">
-                                <rect key="frame" x="18" y="20" width="360" height="17"/>
+                                <rect key="frame" x="18" y="20" width="554" height="17"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="清理状态" id="ngM-b4-6V5">
                                     <font key="font" size="13" name=".PingFangSC-Regular"/>
@@ -746,20 +755,20 @@
                                 </textFieldCell>
                             </textField>
                             <scrollView fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3VG-Ke-t4R">
-                                <rect key="frame" x="20" y="51" width="345" height="309"/>
+                                <rect key="frame" x="20" y="51" width="640" height="309"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <clipView key="contentView" ambiguous="YES" id="gBc-FW-Ai6">
-                                    <rect key="frame" x="1" y="0.0" width="343" height="308"/>
+                                    <rect key="frame" x="1" y="0.0" width="638" height="308"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="n4S-O6-oWY" id="hYY-qI-haI">
-                                            <rect key="frame" x="0.0" y="0.0" width="343" height="285"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="638" height="285"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                             <tableColumns>
-                                                <tableColumn identifier="MethodId" width="189" minWidth="40" maxWidth="1000" id="uZ0-qk-gD0">
+                                                <tableColumn identifier="MethodId" width="239.5" minWidth="40" maxWidth="1000" id="uZ0-qk-gD0">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="方法标识">
                                                         <font key="font" metaFont="smallSystem"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -772,7 +781,7 @@
                                                     </textFieldCell>
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                 </tableColumn>
-                                                <tableColumn identifier="MethodPath" width="148" minWidth="40" maxWidth="1000" id="4sv-Lh-bwL">
+                                                <tableColumn identifier="MethodPath" width="392.5" minWidth="40" maxWidth="1000" id="4sv-Lh-bwL">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="路径">
                                                         <font key="font" metaFont="smallSystem"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -802,7 +811,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <tableHeaderView key="headerView" id="n4S-O6-oWY">
-                                    <rect key="frame" x="0.0" y="0.0" width="343" height="23"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="638" height="23"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableHeaderView>
                             </scrollView>
@@ -819,12 +828,12 @@
                     </view>
                     <connections>
                         <outlet property="cleanBt" destination="8o9-ag-JFY" id="cXf-3S-CA8"/>
-                        <outlet property="cleanUnuseMethodBt" destination="ied-B2-BaK" id="0rr-nA-MKO"/>
                         <outlet property="desLb" destination="BHh-bh-ZYB" id="Vmz-26-4fR"/>
                         <outlet property="dragView" destination="f5b-by-JKp" id="QAq-5o-jac"/>
                         <outlet property="parsingIndicator" destination="rZ5-yv-iBb" id="JVU-Wl-FtO"/>
                         <outlet property="pathDes" destination="9O1-fs-eDL" id="V4D-Dl-MNl"/>
                         <outlet property="resultTb" destination="hYY-qI-haI" id="Ubj-cT-Zra"/>
+                        <outlet property="seachBt" destination="i1I-ex-zPP" id="ZZd-j7-eiN"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
