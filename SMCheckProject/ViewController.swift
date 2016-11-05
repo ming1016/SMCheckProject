@@ -19,6 +19,8 @@ class ViewController: NSViewController,NSTableViewDataSource,NSTableViewDelegate
     @IBOutlet weak var resultTb: NSTableView!
     @IBOutlet weak var dragView: DragView!
     @IBOutlet weak var seachBt: NSButtonCell!
+    @IBOutlet weak var detailTv: NSScrollView!
+    @IBOutlet var detailTxv: NSTextView!
     
     var unusedMethods = [Method]() //无用方法
     var selectedPath : String = "" {
@@ -34,6 +36,7 @@ class ViewController: NSViewController,NSTableViewDataSource,NSTableViewDelegate
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        detailTxv.string = ""
         parsingIndicator.isHidden = true
         desLb.stringValue = ""
         pathDes.stringValue = "请选择工程目录"
@@ -90,6 +93,12 @@ class ViewController: NSViewController,NSTableViewDataSource,NSTableViewDelegate
                     
                 } else if result is [Method] {
                     self.unusedMethods = result as! [Method]
+                } else if result is File {
+                    DispatchQueue.main.async {
+                        let aFile = result as! File
+                        self.detailTxv.string = self.detailTxv.string! + aFile.des() + "\n"
+                        self.detailTv.contentView .scroll(to: NSPoint(x: 0, y: ((self.detailTv.documentView?.frame.size.height)! - self.detailTv.contentSize.height)))
+                    }
                 }
             })
             DispatchQueue.main.async {

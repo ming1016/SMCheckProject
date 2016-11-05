@@ -30,28 +30,29 @@ class File: NSObject {
     public var name = ""
     public var methods = [Method]() //所有方法
     
-    func des() {
-        print("文件路径：\(path)\n")
-        print("文件名：\(name)\n")
-        print("方法数量：\(methods.count)\n")
-        print("方法列表：")
+    func des() -> String {
+        var str = ""
+        str += "文件路径：\(path)\n"
+        str += "文件名：\(name)\n"
+        str += "方法数量：\(methods.count)\n"
+        str += "方法列表：\n"
         for aMethod in methods {
             var showStr = "- (\(aMethod.returnType)) "
             showStr = showStr.appending(File.desDefineMethodParams(paramArr: aMethod.params))
-            print("\n\(showStr)")
+            str += "\n\(showStr)\n"
             if aMethod.usedMethod.count > 0 {
-                print("用过的方法----------")
+                str += "用过的方法----------\n"
                 showStr = ""
                 for aUsedMethod in aMethod.usedMethod {
                     showStr = ""
                     showStr = showStr.appending(File.desUsedMethodParams(paramArr: aUsedMethod.params))
-                    print("\(showStr)")
+                    str += "\(showStr)\n"
                 }
-                print("------------------")
+                str += "------------------\n"
             }
             
         }
-        print("\n")
+        return str
     }
     
     //类方法

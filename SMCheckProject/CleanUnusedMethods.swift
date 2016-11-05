@@ -173,7 +173,7 @@ class CleanUnusedMethods: NSObject {
                     } //遍历tokens
                     files.append(aFile)
                     //aFile.des()
-                    
+                    observer.on(.next(aFile))
                     
                     
                 } //判断地址是否为空
