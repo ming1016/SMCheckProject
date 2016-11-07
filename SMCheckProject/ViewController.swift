@@ -37,6 +37,7 @@ class ViewController: NSViewController,NSTableViewDataSource,NSTableViewDelegate
     override func viewDidLoad() {
         super.viewDidLoad()
         detailTxv.string = ""
+        detailTxv.textColor = NSColor.gray
         parsingIndicator.isHidden = true
         desLb.stringValue = ""
         pathDes.stringValue = "请选择工程目录"
