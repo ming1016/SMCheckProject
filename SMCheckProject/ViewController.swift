@@ -33,6 +33,8 @@ class ViewController: NSViewController,NSTableViewDataSource,NSTableViewDelegate
             }
         }
     }
+    var filesDic = [String:File]() //遍历后文件集
+    var parsingLog = "" //遍历后的日志
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -83,7 +85,10 @@ class ViewController: NSViewController,NSTableViewDataSource,NSTableViewDelegate
         parsingIndicator.startAnimation(nil)
         desLb.stringValue = "查找中..."
         cleanBt.isEnabled = false
+        seachBt.isEnabled = false
         pathDes.stringValue = selectedPath.replacingOccurrences(of: "file://", with: "")
+        detailTxv.string = ""
+        parsingLog = ""
         DispatchQueue.global().async {
 //            self.unusedMethods = CleanUnusedMethods().find(path: self.selectedPath)
             _ = CleanUnusedMethods().find(path: self.selectedPath).subscribe(onNext: { (result) in
@@ -97,17 +102,22 @@ class ViewController: NSViewController,NSTableViewDataSource,NSTableViewDelegate
                 } else if result is File {
                     DispatchQueue.main.async {
                         let aFile = result as! File
-                        self.detailTxv.string = self.detailTxv.string! + aFile.des() + "\n"
-                        self.detailTv.contentView .scroll(to: NSPoint(x: 0, y: ((self.detailTv.documentView?.frame.size.height)! - self.detailTv.contentSize.height)))
+                        self.filesDic[aFile.path] = aFile
+                        self.parsingLog = self.parsingLog + aFile.des() + "\n"
+                        
                     }
                 }
             })
             DispatchQueue.main.async {
                 self.cleanBt.isEnabled = true
+                self.seachBt.isEnabled = true
                 self.parsingIndicator.stopAnimation(nil)
                 self.parsingIndicator.isHidden = true
                 self.desLb.stringValue = "完成查找"
                 self.resultTb.reloadData()
+                
+                self.detailTxv.string = self.parsingLog
+                self.detailTv.contentView .scroll(to: NSPoint(x: 0, y: ((self.detailTv.documentView?.frame.size.height)! - self.detailTv.contentSize.height)))
             }
         }
         
@@ -136,6 +146,12 @@ class ViewController: NSViewController,NSTableViewDataSource,NSTableViewDelegate
         //双击打开finder到指定的文件
         NSWorkspace.shared().openFile(filePathString, withApplication: "Xcode")
     }
+    //Cell OneClick
+    func cellOneClick() {
+        let aMethod = self.unusedMethods[self.resultTb.selectedRow]
+        let cFile = self.filesDic[aMethod.filePath]
+        self.detailTxv.string = cFile?.content
+    }
     
     //NSTableViewDataSource
     func numberOfRows(in tableView: NSTableView) -> Int {
@@ -155,6 +171,10 @@ class ViewController: NSViewController,NSTableViewDataSource,NSTableViewDelegate
         }
         
         return nil
+    }
+    
+    func tableViewSelectionDidChange(_ notification: Notification) {
+        self.cellOneClick()
     }
     
     //DragViewDelegate

@@ -8,26 +8,25 @@
 
 import Cocoa
 enum FileType {
-    case fileH
-    case fileM
-    case fileSwift
+    case FileH,FileM,FileSwift
 }
 
 class File: NSObject {
     public var path = "" {
         didSet {
             if path.hasSuffix(".h") {
-                type = FileType.fileH
+                type = FileType.FileH
             } else if path.hasSuffix(".m") {
-                type = FileType.fileM
+                type = FileType.FileM
             } else if path.hasSuffix(".swift") {
-                type = FileType.fileSwift
+                type = FileType.FileSwift
             }
-            name = (path.components(separatedBy: "/").last?.components(separatedBy: ".").first)!
+            name = (path.components(separatedBy: "/").last)!
         }
     }
-    public var type = FileType.fileH
+    public var type = FileType.FileH
     public var name = ""
+    public var content = ""
     public var methods = [Method]() //所有方法
     
     func des() -> String {

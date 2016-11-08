@@ -10,6 +10,9 @@ import Cocoa
 import RxSwift
 
 class CleanUnusedMethods: NSObject {
+    override init() {
+        
+    }
     
     func find(path: String) -> Observable<Any> {
         
@@ -22,8 +25,6 @@ class CleanUnusedMethods: NSObject {
             //过滤文件后缀
             let filterPath = NSArray(array: (enumeratorAtPath?.allObjects)!).pathsMatchingExtensions(["h","m"])
             //            print("过滤后缀后的文件: \(filterPath)")
-            
-            var files = [File]()
             
             var methodsDefinedInHFile = [Method]() //h文件定义的方法集合
             var methodsDefinedInMFile = [Method]() //m文件定义的方法集合
@@ -54,7 +55,7 @@ class CleanUnusedMethods: NSObject {
                     i += 1
                     let content = try! String(contentsOf: fileUrl!, encoding: String.Encoding.utf8)
                     //print("文件内容: \(content)")
-                    
+                    aFile.content = content
                     let tokens = ParsingBase.createOCTokens(conent: content)
                     
                     //----------根据行数切割----------
@@ -94,7 +95,7 @@ class CleanUnusedMethods: NSObject {
                     
                     for tk in tokens {
                         //h文件 m文件
-                        if aFile.type == FileType.fileH || aFile.type == FileType.fileM {
+                        if aFile.type == FileType.FileH || aFile.type == FileType.FileM {
                             
                             //解析方法内容
                             if psMtdContentTf {
@@ -171,7 +172,6 @@ class CleanUnusedMethods: NSObject {
                         } //m和h文件
                         
                     } //遍历tokens
-                    files.append(aFile)
                     //aFile.des()
                     observer.on(.next(aFile))
                     
@@ -204,9 +204,9 @@ class CleanUnusedMethods: NSObject {
                     //todo:处理delegate这样的情况
                     if methodsMFileSet.contains(aHMethod.pnameId) {
                         //todo:定义一些继承的类，将继承方法加入头文件中的情况
-                        //                    if aHMethod.pnameId == "responseModelWithData:" {
-                        //                        continue
-                        //                    }
+//                    if aHMethod.pnameId == "responseModelWithData:" {
+//                        continue
+//                    }
                         unUsedMethods.append(aHMethod)
                     }
                 }
