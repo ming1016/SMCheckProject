@@ -10,7 +10,7 @@ import Cocoa
 enum FileType {
     case FileH,FileM,FileSwift
 }
-
+//文件
 class File: NSObject {
     public var path = "" {
         didSet {
@@ -28,6 +28,7 @@ class File: NSObject {
     public var name = ""
     public var content = ""
     public var methods = [Method]() //所有方法
+    public var imports = [Import]()
     
     func des() -> String {
         var str = ""
@@ -75,7 +76,23 @@ class File: NSObject {
         }
         return showStr
     }
-    
+}
+
+//对象
+class Object {
+    public var name = ""
+    public var superObject = ""
+    public var properties = [Property]()
+    public var methods = [Method]()
+}
+
+struct Property {
+    public var name = ""
+    public var type = ""
+}
+
+struct Import {
+    public var fileName = ""
 }
 
 struct Method {

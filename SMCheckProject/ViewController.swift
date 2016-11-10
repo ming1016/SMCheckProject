@@ -75,6 +75,9 @@ class ViewController: NSViewController,NSTableViewDataSource,NSTableViewDelegate
                 self.parsingIndicator.stopAnimation(nil)
                 self.parsingIndicator.isHidden = true
                 self.desLb.stringValue = "完成清理"
+                self.detailTxv.string = ""
+                self.unusedMethods = []
+                self.resultTb.reloadData()
             }
         }
     }

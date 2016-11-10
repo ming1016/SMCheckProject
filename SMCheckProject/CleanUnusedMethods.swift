@@ -56,6 +56,8 @@ class CleanUnusedMethods: NSObject {
                     let content = try! String(contentsOf: fileUrl!, encoding: String.Encoding.utf8)
                     //print("文件内容: \(content)")
                     aFile.content = content
+                    
+                    
                     let tokens = ParsingBase.createOCTokens(conent: content)
                     
                     //----------根据行数切割----------
@@ -64,6 +66,7 @@ class CleanUnusedMethods: NSObject {
                     for var aLine in lines {
                         //清理头尾
                         aLine = aLine.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+                        //处理#开头情况
                         if aLine.hasPrefix(Sb.pSign) {
                             
                             let tokens = ParsingBase.createOCTokens(conent: aLine)
@@ -78,11 +81,22 @@ class CleanUnusedMethods: NSObject {
                                         }
                                     }
                                 } //#define这样的定义
+                                
+                                //@interface
+                                
+                                //@implementation
+                                
+                                //@end
+                                
+                                
                             } //token数量是否够
                         } //#符号开头的
+                        
+                        //处理@i
+                        
                     } //遍历lines，行数组
                     
-                    //---------根据token切割
+                    //---------根据token切割-----------
                     //方法解析
                     var mtdArr = [String]() //方法字符串
                     var psMtdTf = false //是否在解析方法
@@ -203,7 +217,7 @@ class CleanUnusedMethods: NSObject {
                     //这里判断的是delegate类型，m里一定没有定义，所以这里过滤了各个delegate
                     //todo:处理delegate这样的情况
                     if methodsMFileSet.contains(aHMethod.pnameId) {
-                        //todo:定义一些继承的类，将继承方法加入头文件中的情况
+                    //todo:定义一些继承的类，将继承方法加入头文件中的情况
 //                    if aHMethod.pnameId == "responseModelWithData:" {
 //                        continue
 //                    }

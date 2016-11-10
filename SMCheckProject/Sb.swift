@@ -28,6 +28,11 @@ class Sb: NSObject {
     public static let qM = "?"
     public static let upArrow = "^"
     
+    public static let inteface = "@interface"
+    public static let implementation = "@implementation"
+    public static let end = "@end"
+    public static let selector = "@selector"
+    
     public static let space = " "
     public static let newLine = "\n"
 }
