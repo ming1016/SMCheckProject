@@ -1,4 +1,12 @@
-当项目越来越大，引入第三方库越来越多，上架的APP体积也会越来越大，对于用户来说体验必定是不好的。在清理资源，编译选项优化，清理无用类等完成后，能够做而且效果会比较明显的就只有清理无用函数了。现有一种方案是根据Linkmap文件取到objc的所有类方法和实例方法。再用工具逆向可执行文件里引用到的方法名，求个差集列出无用方法。这个方案有些比较麻烦的地方，因为检索出的无用方法没法确定能够直接删除，还需要挨个检索人工判断是否可以删除，这样每次要清理时都需要这样人工排查一遍是非常耗时耗力的。
+当项目越来越大，引入第三方库越来越多，上架的 APP 体积也会越来越大，对于用户来说体验必定是不好的。在清理资源，编译选项优化，清理无用类等完成后，能够做而且效果会比较明显的就只有清理无用函数了。
+
+一种方案是我们滴滴的王康基于clang插件这样一个源码级别的分析工具来分析代码间的调用关系达到分析出无用代码的目的，文章在这里： [基于clang插件的一种iOS包大小瘦身方案](http://mp.weixin.qq.com/s?__biz=MzA3ODg4MDk0Ng==&mid=2651112856&idx=1&sn=b2c74c62a10b4c9a4e7538d1ad7eb739) 文章里对objc方法的定义，调用，实现的全面说明达到了极致，非常值得一看。
+
+另一种方案是根据 *Linkmap* 文件取到objc的所有类方法和实例方法。再用工具比如 otool 命令逆向出可执行文件里引用到的方法名然后通过求差集得到无用函数，由于API的回调也会被认为是无用函数，所以这个方案还需要将这些回调函数加到白名单里过滤。具体说明，可以看看微信团队的这篇文章： [iOS微信安装包瘦身](http://mp.weixin.qq.com/s?__biz=MzAwNDY1ODY2OQ==&mid=207986417&idx=1&sn=77ea7d8e4f8ab7b59111e78c86ccfe66&3rd=MzA3MDU4NTYzMw==&scene=6#rd)
+
+还有一种使用了 * [machoview](https://sourceforge.net/projects/machoview/) * 从 *Mach-O* 里获取信息进行无用方法和文件的处理。阿里有篇文章对 Mach-O 的处理做了详细的说明： [减小ipa体积之删除frameWork中无用mach-O文件](http://jaq.alibaba.com/community/art/show?articleid=229)
+
+这几个现有方案有些比较麻烦的地方，因为检索出的无用方法没法确定能够直接删除，还需要挨个检索人工判断是否可以删除，这样每次要清理时都需要这样人工排查一遍是非常耗时耗力的。
 
 这样就只有模拟编译过程对代码进行深入分析才能够找出确定能够删除的方法。具体效果可以先试试看，程序代码在：<https://github.com/ming1016/SMCheckProject> 选择工程目录后程序就开始检索无用方法然后将其注释掉。
 
@@ -159,12 +167,12 @@ class Sb: NSObject {
     public static let bktR = "]"
     public static let qM = "?"
     public static let upArrow = "^"
-
+    
     public static let inteface = "@interface"
     public static let implementation = "@implementation"
     public static let end = "@end"
     public static let selector = "@selector"
-
+    
     public static let space = " "
     public static let newLine = "\n"
 }
@@ -248,7 +256,7 @@ class func parsingWithArray(arr:Array<String>) -> Method {
         tk = tk.replacingOccurrences(of: Sb.newLine, with: "")
         if (tk == Sb.semicolon || tk == Sb.braceL) && step != 1 {
             var shouldAdd = false
-
+            
             if mtd.params.count > 1 {
                 //处理这种- (void)initWithC:(type)m m2:(type2)i, ... NS_REQUIRES_NIL_TERMINATION;入参为多参数情况
                 if methodParam.type.characters.count > 0 {
@@ -261,7 +269,7 @@ class func parsingWithArray(arr:Array<String>) -> Method {
                 mtd.params.append(methodParam)
                 mtd.pnameId = mtd.pnameId.appending("\(methodParam.name):")
             }
-
+            
         } else if tk == Sb.rBktL {
             bracketCount += 1
             parsingTf = true
@@ -282,7 +290,7 @@ class func parsingWithArray(arr:Array<String>) -> Method {
                         methodParam.type = typeString
                         step = 3
                     }
-
+                    
                 }
                 //括弧结束后的重置工作
                 parsingTf = false
@@ -311,9 +319,9 @@ class func parsingWithArray(arr:Array<String>) -> Method {
         } else if tk != Sb.minus && tk != Sb.add {
             methodParam.name = tk
         }
-
+        
     }//遍历
-
+    
     return mtd
 }
 ```
@@ -388,9 +396,9 @@ class func parsing(contentArr:Array<String>, inMethod:Method) -> Method {
     var preSelectorTk = ""
     var selectorMtd = Method()
     var selectorMtdPar = MethodParam()
-
+    
     uMtdDic[psBrcStep] = Method() //初始时就实例化一个method，避免在define里定义只定义]符号
-
+    
     for var tk in contentArr {
         //selector处理
         if psSelectorTf {
@@ -433,7 +441,7 @@ class func parsing(contentArr:Array<String>, inMethod:Method) -> Method {
             if psBrcStep < 0 {
                 psBrcStep = 0
             }
-
+            
         } else if tk == Sb.colon {
             //条件简写情况处理
             if psCdtTf && psCdtStep == 0 {
@@ -457,7 +465,7 @@ class func parsing(contentArr:Array<String>, inMethod:Method) -> Method {
             preTk = tk
         }
     }
-
+    
     return mtdIn
 }
 ```
@@ -638,8 +646,3 @@ class func delete(methods:[Method]) {
 比如使用ReactiveCocoa和RxSwift这样的函数响应式编程库提供的方法和编程模式进行
 
 对于UI的视图逻辑可以使用一套统一逻辑压缩代码使用DSL来简化写法等。
-
-
-
-
-
