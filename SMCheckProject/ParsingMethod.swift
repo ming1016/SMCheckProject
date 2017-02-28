@@ -9,7 +9,7 @@
 import Cocoa
 
 class ParsingMethod: NSObject {
-    class func parsingWithArray(arr:Array<String>) -> Method {
+    class func parsing(tokens:Array<String>) -> Method {
         var mtd = Method()
         var returnTypeTf = false //是否取得返回类型
         var parsingTf = false //解析中
@@ -18,7 +18,7 @@ class ParsingMethod: NSObject {
         var types = [String]()
         var methodParam = MethodParam()
         //print("\(arr)")
-        for var tk in arr {
+        for var tk in tokens {
             tk = tk.replacingOccurrences(of: Sb.newLine, with: "")
             if (tk == Sb.semicolon || tk == Sb.braceL) && step != 1 {
                 var shouldAdd = false

@@ -28,7 +28,9 @@ class File: NSObject {
     public var name = ""
     public var content = ""
     public var methods = [Method]() //所有方法
-    public var imports = [Import]()
+    public var imports = [Import]() //所有引入
+    public var objects = [Object]() //所有类
+    public var macros = [Macro]()   //文件里定义的宏
     
     func des() -> String {
         var str = ""
@@ -77,22 +79,42 @@ class File: NSObject {
         return showStr
     }
 }
+//#import "file.h"
+struct Import {
+    public var fileName = ""
+    public var libName = ""
+}
 
+//#define REDCOLOR [UIColor HexString:@"000000"]
+struct Macro {
+    public var name = ""
+    public var tokens = [String]()
+}
+//@interface
+struct Interface {
+//    public var name = ""
+//    public var superName = ""
+}
+//@implementation
+struct Implementation {
+    
+}
 //对象
 class Object {
     public var name = ""
-    public var superObject = ""
-    public var properties = [Property]()
+    public var superName = ""
+    public var category = ""
+    public var protocols = [String]()    //协议
+    public var properties = [Property]() //对象里定义的属性
     public var methods = [Method]()
+    public var interface = Interface()
+    public var implementation = Implementation()
 }
 
 struct Property {
     public var name = ""
     public var type = ""
-}
-
-struct Import {
-    public var fileName = ""
+    public var sets = [String]() //nonatomic strong
 }
 
 struct Method {
@@ -102,6 +124,7 @@ struct Method {
     public var returnTypeBlockTf = false
     public var params = [MethodParam]()
     public var usedMethod = [Method]()
+    public var tmpObjects = [Object]() //临时变量集
     public var filePath = "" //定义方法的文件路径，方便修改文件使用
     public var pnameId = ""  //唯一标识，便于快速比较
 }
@@ -109,7 +132,7 @@ struct Method {
 class MethodParam: NSObject {
     public var name = ""
     public var type = ""
-    public var typePointTf = false
+    public var typePointTf = false //是否是指针类型
     public var iName = ""
 }
 

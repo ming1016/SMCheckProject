@@ -15,6 +15,7 @@ class Sb: NSObject {
     public static let rBktR = ")"
     public static let asterisk = "*"
     public static let colon = ":"
+    public static let comma = ","
     public static let semicolon = ";"
     public static let divide = "/"
     public static let agBktL = "<"
@@ -28,10 +29,15 @@ class Sb: NSObject {
     public static let qM = "?"
     public static let upArrow = "^"
     
-    public static let inteface = "@interface"
-    public static let implementation = "@implementation"
-    public static let end = "@end"
-    public static let selector = "@selector"
+    public static let atInteface = "@interface"
+    public static let atImplementation = "@implementation"
+    public static let atEnd = "@end"
+    public static let atSelector = "@selector"
+    public static let atProperty = "@property"
+    
+    public static let defineStr = "#define"
+    public static let importStr = "#import"
+    
     
     public static let space = " "
     public static let newLine = "\n"

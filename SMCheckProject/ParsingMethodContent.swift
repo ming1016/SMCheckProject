@@ -44,7 +44,7 @@ class ParsingMethodContent: NSObject {
                 }
                 continue
             }
-            if tk == Sb.selector {
+            if tk == Sb.atSelector {
                 psSelectorTf = true
                 selectorMtd = Method()
                 selectorMtdPar = MethodParam()

@@ -119,6 +119,7 @@ class ViewController: NSViewController,NSTableViewDataSource,NSTableViewDelegate
                 
                 self.detailTxv.string = self.parsingLog
                 self.detailTv.contentView .scroll(to: NSPoint(x: 0, y: ((self.detailTv.documentView?.frame.size.height)! - self.detailTv.contentSize.height)))
+                
             }
         }
         

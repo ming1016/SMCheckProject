@@ -57,11 +57,13 @@ class CleanUnusedMethods: NSObject {
                     //print("文件内容: \(content)")
                     aFile.content = content
                     
-                    
                     let tokens = ParsingBase.createOCTokens(conent: content)
                     
                     //----------根据行数切割----------
                     let lines = ParsingBase.createOCLines(content: content)
+                    var inInterfaceTf = false
+                    var inImplementationTf = false
+                    var obj = Object()
                     
                     for var aLine in lines {
                         //清理头尾
@@ -71,8 +73,9 @@ class CleanUnusedMethods: NSObject {
                             
                             let tokens = ParsingBase.createOCTokens(conent: aLine)
                             if tokens.count > 1 {
-                                //define
-                                if tokens[1] == "define" {
+                                //#define start
+                                if tokens[1] == Sb.defineStr {
+                                    //处理宏定义的方法
                                     let reMethod = ParsingMethodContent.parsing(contentArr: tokens, inMethod: Method())
                                     if reMethod.usedMethod.count > 0 {
                                         for aUsedMethod in reMethod.usedMethod {
@@ -80,19 +83,53 @@ class CleanUnusedMethods: NSObject {
                                             methodsUsed.append(aUsedMethod.pnameId)
                                         }
                                     }
-                                } //#define这样的定义
+                                    //保存在文件结构体中
+                                    aFile.macros.append(ParsingMacro.parsing(tokens: tokens))
+                                } //#define end
                                 
-                                //@interface
-                                
-                                //@implementation
-                                
-                                //@end
-                                
-                                
+                                //#import start
+                                if tokens[1] == Sb.importStr {
+                                    aFile.imports.append(ParsingImport.parsing(tokens: tokens))
+                                }//#import end
                             } //token数量是否够
                         } //#符号开头的
                         
-                        //处理@i
+                        //@interface
+                        if aLine.hasPrefix(Sb.atInteface) {
+                            inInterfaceTf = true
+                            
+                            //查找文件中是否有该类，有就使用那个，没有就创建一个
+                            let objName = ParsingInterface.parsingNameFrom(line: aLine)
+                            var hasObjTf = false
+                            for aObj in aFile.objects {
+                                if aObj.name == objName {
+                                    hasObjTf = true
+                                }
+                            }
+                            if !hasObjTf {
+                                obj = Object()
+                                aFile.objects.append(obj)
+                            }
+                            ParsingInterface.parsing(line: aLine, inObject: obj)
+                            
+                        }
+                        if inInterfaceTf {
+                            //处理属性
+                            if aLine.hasPrefix(Sb.atProperty) {
+                                let aProperty = ParsingProperty.parsing(tokens: ParsingBase.createOCTokens(conent: aLine))
+                                obj.properties.append(aProperty)
+                            }
+                        }
+                        if aLine.hasPrefix(Sb.atEnd) && inInterfaceTf {
+//                            aFile.objects.append(obj)
+                            inInterfaceTf = false
+                        }
+                        
+                        //@implementation
+                        
+                        
+                        
+                        //@end
                         
                     } //遍历lines，行数组
                     
@@ -161,7 +198,7 @@ class CleanUnusedMethods: NSObject {
                                 mtdArr.append(tk)
                             } else if (tk == Sb.semicolon || tk == Sb.braceL) && psMtdStep == 2 && psMtdTf {
                                 mtdArr.append(tk)
-                                var parsedMethod = ParsingMethod.parsingWithArray(arr: mtdArr)
+                                var parsedMethod = ParsingMethod.parsing(tokens: mtdArr)
                                 //开始处理方法内部
                                 if tk == Sb.braceL {
                                     psMtdContentClass = parsedMethod

@@ -68,7 +68,7 @@ class ParsingBase: NSObject {
                 if line.hasSuffix(Sb.semicolon) && psHMtdTf{
                     psHMtdTf = false
                     
-                    let methodPnameId = ParsingMethod.parsingWithArray(arr: hMtds).pnameId
+                    let methodPnameId = ParsingMethod.parsing(tokens: hMtds).pnameId
                     if aMethod.pnameId == methodPnameId {
                         hContentCleaned += hMtdAnnoStr
                         
@@ -137,7 +137,7 @@ class ParsingBase: NSObject {
                 
                 if line.hasSuffix(Sb.braceL) && psMMtdTf {
                     psMMtdTf = false
-                    let methodPnameId = ParsingMethod.parsingWithArray(arr: mMtds).pnameId
+                    let methodPnameId = ParsingMethod.parsing(tokens: mMtds).pnameId
                     if aMethod.pnameId == methodPnameId {
                         mDeletingTf = true
                         mBraceCount += 1
@@ -183,7 +183,7 @@ class ParsingBase: NSObject {
         let scanner = Scanner(string: str)
         var tokens = [String]()
         //Todo:待处理符号,.
-        let operaters = [Sb.add,Sb.minus,Sb.rBktL,Sb.rBktR,Sb.asterisk,Sb.colon,Sb.semicolon,Sb.divide,Sb.agBktL,Sb.agBktR,Sb.quotM,Sb.pSign,Sb.braceL,Sb.braceR,Sb.bktL,Sb.bktR,Sb.qM]
+        let operaters = [Sb.add,Sb.minus,Sb.rBktL,Sb.rBktR,Sb.asterisk,Sb.colon,Sb.comma,Sb.semicolon,Sb.divide,Sb.agBktL,Sb.agBktR,Sb.quotM,Sb.pSign,Sb.braceL,Sb.braceR,Sb.bktL,Sb.bktR,Sb.qM]
         var operatersString = ""
         for op in operaters {
             operatersString = operatersString.appending(op)
@@ -201,7 +201,7 @@ class ParsingBase: NSObject {
             }
             
             var result:NSString?
-            result = nil;
+            result = nil
             if scanner.scanUpToCharacters(from: set, into: &result) {
                 tokens.append(result as! String)
             }
