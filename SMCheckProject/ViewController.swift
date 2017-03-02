@@ -120,6 +120,20 @@ class ViewController: NSViewController,NSTableViewDataSource,NSTableViewDelegate
                 self.detailTxv.string = self.parsingLog
                 self.detailTv.contentView .scroll(to: NSPoint(x: 0, y: ((self.detailTv.documentView?.frame.size.height)! - self.detailTv.contentSize.height)))
                 
+                //处理无用import
+                DispatchQueue.global().async {
+                    let reSignal = CleanUnusedImports().find(files: self.filesDic)
+                    reSignal.subscribe(onNext: { (result) in
+                        //
+                    }, onError: { (error) in
+                        //
+                    }, onCompleted: { 
+                        //
+                    }, onDisposed: { 
+                        //
+                    })
+                }
+                
             }
         }
         

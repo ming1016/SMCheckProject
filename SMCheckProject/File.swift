@@ -29,8 +29,11 @@ class File: NSObject {
     public var content = ""
     public var methods = [Method]() //所有方法
     public var imports = [Import]() //所有引入
-    public var objects = [Object]() //所有类
-    public var macros = [Macro]()   //文件里定义的宏
+    public var recursionImports = [Import]() //递归所有引入
+    public var objects = [String:Object]() //所有类
+    public var macros = [String:Macro]()       //文件里定义的宏，全局的也会有一份
+    public var protocols = [String:Protocol]() //Todo:还没用，作为性能提升用
+    
     
     func des() -> String {
         var str = ""
@@ -54,6 +57,7 @@ class File: NSObject {
             }
             
         }
+        //Todo: 添加更多详细的文件里的信息。比如说object里的和新加的marcos等。
         return str
     }
     
@@ -90,25 +94,22 @@ struct Macro {
     public var name = ""
     public var tokens = [String]()
 }
-//@interface
-struct Interface {
-//    public var name = ""
-//    public var superName = ""
+
+//@protocol DCOrderListViewDelegate <NSObject>
+struct Protocol {
+    public var name = ""
+    public var methods = [Method]()
 }
-//@implementation
-struct Implementation {
-    
-}
+
 //对象
 class Object {
     public var name = ""
     public var superName = ""
     public var category = ""
-    public var protocols = [String]()    //协议
+    public var usingProtocols = [String]()    //协议
     public var properties = [Property]() //对象里定义的属性
     public var methods = [Method]()
-    public var interface = Interface()
-    public var implementation = Implementation()
+    public var protocols = [String:Protocol]() //Todo:还没用，根据属性和来看看那些属性地方会用什么protocol
 }
 
 struct Property {

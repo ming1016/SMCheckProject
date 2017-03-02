@@ -6,6 +6,13 @@
 //  Copyright © 2017年 Starming. All rights reserved.
 //
 
+/*
+ 语法范例
+ #@interface SMService (Car)
+ #@interface SMPickView : UIView<UIPickerViewDataSource, UIPickerViewDelegate>
+ #@interface SMView ()<SMListTableViewDelegate,SMComUnitDelegate,SMShowDelegate>
+ */
+
 import Cocoa
 
 class ParsingInterface: NSObject {
@@ -35,7 +42,7 @@ class ParsingInterface: NSObject {
             } else if tk == Sb.agBktL && !inProtocolTf {
                 inProtocolTf = true
             } else if tk != Sb.comma && tk != Sb.agBktR && inProtocolTf {
-                inObject.protocols.append(tk)
+                inObject.usingProtocols.append(tk)
             }
         }
         

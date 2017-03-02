@@ -32,6 +32,10 @@ class Sb: NSObject {
     public static let atInteface = "@interface"
     public static let atImplementation = "@implementation"
     public static let atEnd = "@end"
+    public static let atProtocol = "@protocol"
+    public static let atOptional = "@optional"
+    public static let atRequired = "@required"
+    
     public static let atSelector = "@selector"
     public static let atProperty = "@property"
     

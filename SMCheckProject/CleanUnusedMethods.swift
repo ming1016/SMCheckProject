@@ -30,6 +30,8 @@ class CleanUnusedMethods: NSObject {
             var methodsDefinedInMFile = [Method]() //m文件定义的方法集合
             var methodsMFile = [String]()   //m文件pnameId集合
             var methodsUsed = [String]()    //用过的方法集合
+            var protocols = [String:Protocol]() //delegate
+            var marcros = [String:Macro]()     //宏
             
             //遍历文件夹下所有文件
             var i = 0
@@ -50,7 +52,6 @@ class CleanUnusedMethods: NSObject {
                     let aFile = File()
                     aFile.path = fullPath
                     //显示parsing的状态
-                    
                     observer.on(.next("进度：\(i+1)/\(count) 正在查询文件：\(aFile.name)"))
                     i += 1
                     let content = try! String(contentsOf: fileUrl!, encoding: String.Encoding.utf8)
@@ -63,55 +64,54 @@ class CleanUnusedMethods: NSObject {
                     let lines = ParsingBase.createOCLines(content: content)
                     var inInterfaceTf = false
                     var inImplementationTf = false
+                    var inProtocolTf = false
+                    var currentProtocolName = ""
                     var obj = Object()
                     
                     for var aLine in lines {
                         //清理头尾
                         aLine = aLine.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
-                        //处理#开头情况
-                        if aLine.hasPrefix(Sb.pSign) {
-                            
-                            let tokens = ParsingBase.createOCTokens(conent: aLine)
-                            if tokens.count > 1 {
-                                //#define start
-                                if tokens[1] == Sb.defineStr {
-                                    //处理宏定义的方法
-                                    let reMethod = ParsingMethodContent.parsing(contentArr: tokens, inMethod: Method())
-                                    if reMethod.usedMethod.count > 0 {
-                                        for aUsedMethod in reMethod.usedMethod {
-                                            //将用过的方法添加到集合中
-                                            methodsUsed.append(aUsedMethod.pnameId)
-                                        }
-                                    }
-                                    //保存在文件结构体中
-                                    aFile.macros.append(ParsingMacro.parsing(tokens: tokens))
-                                } //#define end
-                                
-                                //#import start
-                                if tokens[1] == Sb.importStr {
-                                    aFile.imports.append(ParsingImport.parsing(tokens: tokens))
-                                }//#import end
-                            } //token数量是否够
-                        } //#符号开头的
                         
-                        //@interface
-                        if aLine.hasPrefix(Sb.atInteface) {
+                        let tokens = ParsingBase.createOCTokens(conent: aLine)
+                        //处理 #define start
+                        if aLine.hasPrefix(Sb.defineStr) {
+                            //处理宏定义的方法
+                            let reMethod = ParsingMethodContent.parsing(contentArr: tokens, inMethod: Method())
+                            if reMethod.usedMethod.count > 0 {
+                                for aUsedMethod in reMethod.usedMethod {
+                                    //将用过的方法添加到集合中
+                                    methodsUsed.append(aUsedMethod.pnameId)
+                                }
+                            }
+                            //保存在文件结构体中
+                            let aMarcro = ParsingMacro.parsing(line: aLine)
+                            aFile.macros[aMarcro.name] = aMarcro //添加到文件的集合里
+                            marcros[aMarcro.name] = aMarcro      //添加到全局里
+                            continue
+                        }//#define end
+                        
+                        //处理 #import start
+                        if aLine.hasPrefix(Sb.importStr) {
+                            aFile.imports.append(ParsingImport.parsing(tokens: tokens))
+                            continue
+                        }//#import end
+                        
+                        
+                        //处理 @interface
+                        if aLine.hasPrefix(Sb.atInteface) && !inInterfaceTf {
                             inInterfaceTf = true
+                            inProtocolTf = false
+                            currentProtocolName = ""
                             
                             //查找文件中是否有该类，有就使用那个，没有就创建一个
                             let objName = ParsingInterface.parsingNameFrom(line: aLine)
-                            var hasObjTf = false
-                            for aObj in aFile.objects {
-                                if aObj.name == objName {
-                                    hasObjTf = true
-                                }
-                            }
-                            if !hasObjTf {
+                            if !aFile.objects.keys.contains(objName) {
                                 obj = Object()
-                                aFile.objects.append(obj)
+                                aFile.objects[objName] = obj
                             }
-                            ParsingInterface.parsing(line: aLine, inObject: obj)
                             
+                            ParsingInterface.parsing(line: aLine, inObject: obj)
+                            continue
                         }
                         if inInterfaceTf {
                             //处理属性
@@ -123,15 +123,58 @@ class CleanUnusedMethods: NSObject {
                         if aLine.hasPrefix(Sb.atEnd) && inInterfaceTf {
 //                            aFile.objects.append(obj)
                             inInterfaceTf = false
+                            inProtocolTf = false
+                            currentProtocolName = ""
+                            continue
                         }
                         
-                        //@implementation
+                        //处理 @implementation
+                        if aLine.hasPrefix(Sb.atImplementation) && !inImplementationTf {
+                            inImplementationTf = true
+                            //暂不处理
+                            continue
+                        }
+                        if aLine.hasPrefix(Sb.atEnd) && inImplementationTf {
+                            inImplementationTf = false
+                            inProtocolTf = false
+                            currentProtocolName = ""
+                            continue
+                        }
                         
+                        //处理 @protocol
+                        if aLine.hasPrefix(Sb.atProtocol) && !inProtocolTf {
+                            inProtocolTf = true
+                            currentProtocolName = ParsingProtocol.parsingNameFrom(line: aLine)
+                            //检查是否已经存在该protocol
+                            if !protocols.keys.contains(currentProtocolName) {
+                                var newPro = Protocol()
+                                newPro.name = currentProtocolName
+                                protocols[currentProtocolName] = newPro
+                            }
+                            continue
+                        }
+                        if inProtocolTf && currentProtocolName != "" {
+                            //开始处理protocol里的方法
+                            if !aLine.hasPrefix(Sb.atOptional) || !aLine.hasPrefix(Sb.atRequired) {
+                                let pMtd = ParsingMethod.parsing(tokens: ParsingBase.createOCTokens(conent: aLine))
+                                if pMtd.pnameId != "" {
+                                    protocols[currentProtocolName]?.methods.append(pMtd)
+                                }
+                            }
+                        }
+                        if aLine.hasPrefix(Sb.atEnd) && inProtocolTf {
+                            inProtocolTf = false
+                            currentProtocolName = ""
+                            continue
+                        }
                         
-                        
-                        //@end
                         
                     } //遍历lines，行数组
+                    
+                    //测试用
+                    if aFile.name == "SMSubCls.h" {
+                        
+                    }
                     
                     //---------根据token切割-----------
                     //方法解析
@@ -179,7 +222,7 @@ class CleanUnusedMethods: NSObject {
                                     mtdContentArr.append(tk)
                                 }
                                 continue
-                            } //方法内容处理
+                            } //方法内容处理结束
                             
                             //方法解析
                             //如果-和(没有连接起来直接判断不是方法
