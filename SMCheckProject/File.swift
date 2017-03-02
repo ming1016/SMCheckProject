@@ -29,8 +29,8 @@ class File: NSObject {
     public var content = ""
     public var methods = [Method]() //所有方法
     public var imports = [Import]() //所有引入
-    public var recursionImports = [Import]() //递归所有引入
-    public var objects = [String:Object]() //所有类
+    public var recursionImports = [Import]()   //递归所有引入
+    public var objects = [String:Object]()     //所有类
     public var macros = [String:Macro]()       //文件里定义的宏，全局的也会有一份
     public var protocols = [String:Protocol]() //Todo:还没用，作为性能提升用
     
@@ -106,9 +106,9 @@ class Object {
     public var name = ""
     public var superName = ""
     public var category = ""
-    public var usingProtocols = [String]()    //协议
-    public var properties = [Property]() //对象里定义的属性
-    public var methods = [Method]()
+    public var usingProtocols = [String]()     //协议
+    public var properties = [Property]()       //对象里定义的属性
+    public var methods = [Method]()            //定义的方法
     public var protocols = [String:Protocol]() //Todo:还没用，根据属性和来看看那些属性地方会用什么protocol
 }
 

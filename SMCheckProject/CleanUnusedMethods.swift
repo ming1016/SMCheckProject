@@ -186,11 +186,27 @@ class CleanUnusedMethods: NSObject {
                     var psMtdContentClass = Method() //正在解析的那个方法
                     var psMtdContentTf = false  //是否正在解析那个方法中实现部分内容
                     var psMtdContentBraceCount = 0 //大括号计数
+                    //获取当前object
+                    var implementStep = 0
+                    var currentObject = Object()
                     
                     for tk in tokens {
                         //h文件 m文件
                         if aFile.type == FileType.FileH || aFile.type == FileType.FileM {
-                            
+                            //设置使用哪个obj，根据implement
+                            if aFile.type == FileType.FileM {
+                                if tk == Sb.at {
+                                    implementStep = 1
+                                } else if tk == Sb.implementationStr && implementStep == 1 {
+                                    implementStep = 2
+                                } else if implementStep == 2 {
+                                    guard let cObject = aFile.objects[tk] else {
+                                        continue
+                                    }
+                                    currentObject = cObject
+                                }
+                                
+                            }
                             //解析方法内容
                             if psMtdContentTf {
                                 if tk == Sb.braceL {
