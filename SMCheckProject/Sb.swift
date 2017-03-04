@@ -44,6 +44,7 @@ class Sb: NSObject {
     public static let importStr = "#import"
     
     public static let implementationStr = "implementation"
+    public static let endStr = "end"
     
     
     public static let space = " "

@@ -200,10 +200,15 @@ class CleanUnusedMethods: NSObject {
                                 } else if tk == Sb.implementationStr && implementStep == 1 {
                                     implementStep = 2
                                 } else if implementStep == 2 {
+                                    implementStep = 0
                                     guard let cObject = aFile.objects[tk] else {
                                         continue
                                     }
                                     currentObject = cObject
+                                } else if tk == Sb.endStr && implementStep == 1{
+                                    implementStep = 0
+                                } else {
+                                    implementStep = 0
                                 }
                                 
                             }
@@ -218,6 +223,7 @@ class CleanUnusedMethods: NSObject {
                                     if psMtdContentBraceCount == 0 {
                                         var reMethod = ParsingMethodContent.parsing(contentArr: mtdContentArr, inMethod: psMtdContentClass)
                                         aFile.methods.append(reMethod)
+                                        currentObject.methods.append(reMethod)
                                         reMethod.filePath = aFile.path //将m文件路径赋给方法
                                         methodsDefinedInMFile.append(reMethod)
                                         methodsMFile.append(reMethod.pnameId) //方便快速对比映射用

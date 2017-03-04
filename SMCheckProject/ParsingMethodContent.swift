@@ -7,11 +7,39 @@
 //
 
 import Cocoa
+import RxSwift
 
 class ParsingMethodContent: NSObject {
+    class func parsing(method:Method, file:File) -> Observable<Any> {
+        return Observable.create({ (observer) -> Disposable in
+            for tk in method.tokens {
+                if tk == "SMSubCls" {
+                    //
+                }
+                guard let obj = file.importObjects[tk] else {
+                    continue
+                }
+                guard let _ = file.usedObjects[tk] else {
+                    file.usedObjects[tk] = obj
+                    observer.on(.next(obj))
+                    
+                    continue
+                }
+                
+            }
+            observer.on(.completed)
+            return Disposables.create {
+                
+            }
+        })
+        
+    }
+    
+    //-----------处理用过的方法------------
     class func parsing(contentArr:Array<String>, inMethod:Method) -> Method {
         var mtdIn = inMethod
-        //处理用过的方法
+        mtdIn.tokens = contentArr
+        
         //todo:还要过滤@""这种情况
         var psBrcStep = 0
         var uMtdDic = [Int:Method]()

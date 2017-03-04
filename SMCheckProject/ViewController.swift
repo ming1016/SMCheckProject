@@ -122,15 +122,10 @@ class ViewController: NSViewController,NSTableViewDataSource,NSTableViewDelegate
                 
                 //处理无用import
                 DispatchQueue.global().async {
-                    let reSignal = CleanUnusedImports().find(files: self.filesDic)
-                    reSignal.subscribe(onNext: { (result) in
-                        //
-                    }, onError: { (error) in
-                        //
-                    }, onCompleted: { 
-                        //
-                    }, onDisposed: { 
-                        //
+                    let _ = CleanUnusedImports().find(files: self.filesDic).subscribe(onNext: { (result) in
+                        if result is [String:File] {
+                            
+                        }
                     })
                 }
                 

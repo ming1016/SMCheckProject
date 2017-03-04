@@ -28,11 +28,13 @@ class File: NSObject {
     public var name = ""
     public var content = ""
     public var methods = [Method]() //所有方法
-    public var imports = [Import]() //所有引入
-    public var recursionImports = [Import]()   //递归所有引入
-    public var objects = [String:Object]()     //所有类
-    public var macros = [String:Macro]()       //文件里定义的宏，全局的也会有一份
-    public var protocols = [String:Protocol]() //Todo:还没用，作为性能提升用
+    public var imports = [Import]() //一级引入
+    public var recursionImports = [Import]()     //递归所有层级引入
+    public var importObjects = [String:Object]() //所有引入的对象
+    public var usedObjects = [String:Object]()
+    public var objects = [String:Object]()       //文件里定义的所有类
+    public var macros = [String:Macro]()         //文件里定义的宏，全局的也会有一份
+    public var protocols = [String:Protocol]()   //Todo:还没用，作为性能提升用
     
     
     func des() -> String {
@@ -87,6 +89,7 @@ class File: NSObject {
 struct Import {
     public var fileName = ""
     public var libName = ""
+    public var file = File()  //这样记录所有递归出的引用类时就能够直接获取File里的详细信息了
 }
 
 //#define REDCOLOR [UIColor HexString:@"000000"]
@@ -124,10 +127,12 @@ struct Method {
     public var returnTypePointTf = false
     public var returnTypeBlockTf = false
     public var params = [MethodParam]()
+    public var tokens = [String]()     //方法内容token
     public var usedMethod = [Method]()
     public var tmpObjects = [Object]() //临时变量集
-    public var filePath = "" //定义方法的文件路径，方便修改文件使用
-    public var pnameId = ""  //唯一标识，便于快速比较
+    public var filePath = ""           //定义方法的文件路径，方便修改文件使用
+    public var pnameId = ""            //唯一标识，便于快速比较
+    
 }
 
 class MethodParam: NSObject {
