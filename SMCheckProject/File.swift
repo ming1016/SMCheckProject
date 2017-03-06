@@ -31,7 +31,7 @@ class File: NSObject {
     public var imports = [Import]() //一级引入
     public var recursionImports = [Import]()     //递归所有层级引入
     public var importObjects = [String:Object]() //所有引入的对象
-    public var usedObjects = [String:Object]()
+    public var usedObjects = [String:Object]()   //已经使用过的对象，无用的引入可以通过对比self.imports里的文件里的定义的objects求差集得到
     public var objects = [String:Object]()       //文件里定义的所有类
     public var macros = [String:Macro]()         //文件里定义的宏，全局的也会有一份
     public var protocols = [String:Protocol]()   //Todo:还没用，作为性能提升用

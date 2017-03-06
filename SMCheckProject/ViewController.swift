@@ -124,6 +124,10 @@ class ViewController: NSViewController,NSTableViewDataSource,NSTableViewDelegate
                 DispatchQueue.global().async {
                     let _ = CleanUnusedImports().find(files: self.filesDic).subscribe(onNext: { (result) in
                         if result is [String:File] {
+                            //接受更新后的全部文件
+                            self.filesDic = result as! [String:File]
+                        } else if result is [String:Object] {
+                            //接受全部无用import字典
                             
                         }
                     })

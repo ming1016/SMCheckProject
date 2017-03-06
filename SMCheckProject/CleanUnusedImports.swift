@@ -27,14 +27,17 @@ class CleanUnusedImports: NSObject {
             for (_, aFile) in allFiles {
                 //单文件处理
                 aFile.recursionImports = self.fetchImports(file: aFile, allFiles: allFiles, allRecursionImports:[Import]())
+                //记录所有import的的类
                 for aImport in aFile.recursionImports {
                     for (name, aObj) in aImport.file.objects {
+                        //全部类
                         aFile.importObjects[name] = aObj
                         allObjects[name] = aObj
                     }
                 }
                 newFiles[aFile.name] = aFile
                 //处理无用的import
+                //记录所有用过的类
                 for aMethod in aFile.methods {
                     let _ = ParsingMethodContent.parsing(method: aMethod, file: aFile).subscribe(onNext:{ (result) in
                         if result is Object {
@@ -43,16 +46,29 @@ class CleanUnusedImports: NSObject {
                         }
                     })
                 }
+                //记录类的父类，作为已用类
+                for (_, value) in allObjects {
+                    if value.superName.characters.count > 0 {
+                        guard let obj = allObjects[value.superName] else {
+                            continue
+                        }
+                        allUsedObjects[value.superName] = obj
+                    }
+                }
+                
             }
-            print("\(allObjects.keys)")
-            print("-----------------------")
-            print("\(allUsedObjects.keys)")
+//            print("\(allObjects.keys)")
+//            print("-----------------------")
+//            print("\(allUsedObjects.keys)")
             //遍历对比出无用的类
-//            for (key, value) in allObjects {
-//                guard let _ = allUsedObjects[key] else {
-//                    
-//                }
-//            }
+            var allUnUsedObjects = [String:Object]()
+            for (key, value) in allObjects {
+                guard let _ = allUsedObjects[key] else {
+                    allUnUsedObjects[key] = value
+                    continue
+                }
+            }
+            observer.on(.next(allUnUsedObjects))
             observer.on(.next(newFiles))
             observer.on(.completed)
             return Disposables.create {

@@ -13,20 +13,18 @@ class ParsingMethodContent: NSObject {
     class func parsing(method:Method, file:File) -> Observable<Any> {
         return Observable.create({ (observer) -> Disposable in
             for tk in method.tokens {
-                if tk == "SMSubCls" {
-                    //
-                }
                 guard let obj = file.importObjects[tk] else {
                     continue
                 }
                 guard let _ = file.usedObjects[tk] else {
+                    //记录使用过的类
                     file.usedObjects[tk] = obj
                     observer.on(.next(obj))
                     
                     continue
-                }
-                
+                }   
             }
+            
             observer.on(.completed)
             return Disposables.create {
                 

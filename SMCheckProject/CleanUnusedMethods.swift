@@ -42,7 +42,6 @@ class CleanUnusedMethods: NSObject {
                 
                 fullPath.append(filePathString)
                 
-                
                 //读取文件内容
                 let fileUrl = URL(string: fullPath)
                 
