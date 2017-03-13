@@ -81,11 +81,14 @@ class CleanUnusedImports: NSObject {
     func fetchImports(file: File, allFiles:[String:File], allRecursionImports:[Import]) -> [Import] {
         var allRecursionImports = allRecursionImports
         for aImport in file.imports {
-            if !checkIfContain(aImport: aImport, inImports: allRecursionImports) {
-                allRecursionImports.append(addFileObjectTo(aImport: aImport, allFiles: allFiles))
-            }
+            
             
             guard let importFile = allFiles[aImport.fileName] else {
+                continue
+            }
+            if !checkIfContain(aImport: aImport, inImports: allRecursionImports) {
+                allRecursionImports.append(addFileObjectTo(aImport: aImport, allFiles: allFiles))
+            } else {
                 continue
             }
             

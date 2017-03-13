@@ -91,7 +91,11 @@ class CleanUnusedMethods: NSObject {
                         
                         //处理 #import start
                         if aLine.hasPrefix(Sb.importStr) {
-                            aFile.imports.append(ParsingImport.parsing(tokens: tokens))
+                            let imp = ParsingImport.parsing(tokens: tokens)
+                            guard imp.fileName.characters.count > 0 else {
+                                continue
+                            }
+                            aFile.imports.append(imp)
                             continue
                         }//#import end
                         
