@@ -28,7 +28,6 @@ class Sb: NSObject {
     public static let bktR = "]"
     public static let qM = "?"
     public static let upArrow = "^"
-    public static let at = "@"
     
     public static let atInteface = "@interface"
     public static let atImplementation = "@implementation"
@@ -42,10 +41,6 @@ class Sb: NSObject {
     
     public static let defineStr = "#define"
     public static let importStr = "#import"
-    
-    public static let implementationStr = "implementation"
-    public static let endStr = "end"
-    
     
     public static let space = " "
     public static let newLine = "\n"

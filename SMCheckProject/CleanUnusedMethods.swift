@@ -190,7 +190,6 @@ class CleanUnusedMethods: NSObject {
                     var psMtdContentTf = false  //是否正在解析那个方法中实现部分内容
                     var psMtdContentBraceCount = 0 //大括号计数
                     //获取当前object
-                    var implementStep = 0
                     var currentObject = Object()
                     
                     for tk in tokens {
@@ -198,20 +197,11 @@ class CleanUnusedMethods: NSObject {
                         if aFile.type == FileType.FileH || aFile.type == FileType.FileM {
                             //设置使用哪个obj，根据implement
                             if aFile.type == FileType.FileM {
-                                if tk == Sb.at {
-                                    implementStep = 1
-                                } else if tk == Sb.implementationStr && implementStep == 1 {
-                                    implementStep = 2
-                                } else if implementStep == 2 {
-                                    implementStep = 0
+                                if tk == Sb.atImplementation {
                                     guard let cObject = aFile.objects[tk] else {
                                         continue
                                     }
                                     currentObject = cObject
-                                } else if tk == Sb.endStr && implementStep == 1{
-                                    implementStep = 0
-                                } else {
-                                    implementStep = 0
                                 }
                                 
                             }
@@ -322,10 +312,12 @@ class CleanUnusedMethods: NSObject {
                     //这里判断的是delegate类型，m里一定没有定义，所以这里过滤了各个delegate
                     //todo:处理delegate这样的情况
                     if methodsMFileSet.contains(aHMethod.pnameId) {
-                    //todo:定义一些继承的类，将继承方法加入头文件中的情况
-//                    if aHMethod.pnameId == "responseModelWithData:" {
-//                        continue
-//                    }
+                        //todo:定义一些继承的类，将继承方法加入头文件中的情况
+                        //白名单
+//                        if aHMethod.pnameId == "responseModelWithData:" || aHMethod.pnameId == "initWithTableView:" || aHMethod.pnameId == "setErrMessage:" {
+//                            continue
+//                        }
+                        
                         unUsedMethods.append(aHMethod)
                     }
                 }

@@ -183,7 +183,7 @@ class ParsingBase: NSObject {
         let scanner = Scanner(string: str)
         var tokens = [String]()
         //Todo:待处理符号,.
-        let operaters = [Sb.add,Sb.minus,Sb.rBktL,Sb.rBktR,Sb.asterisk,Sb.colon,Sb.comma,Sb.semicolon,Sb.divide,Sb.agBktL,Sb.agBktR,Sb.quotM,Sb.pSign,Sb.braceL,Sb.braceR,Sb.bktL,Sb.bktR,Sb.qM,Sb.at]
+        let operaters = [Sb.add,Sb.minus,Sb.rBktL,Sb.rBktR,Sb.asterisk,Sb.colon,Sb.comma,Sb.semicolon,Sb.divide,Sb.agBktL,Sb.agBktR,Sb.quotM,Sb.pSign,Sb.braceL,Sb.braceR,Sb.bktL,Sb.bktR,Sb.qM]
         var operatersString = ""
         for op in operaters {
             operatersString = operatersString.appending(op)
